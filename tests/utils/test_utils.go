@@ -54,8 +54,8 @@ func getTestDSN() string {
 	host := getEnv("TEST_DB_HOST", "localhost")
 	port := getEnv("TEST_DB_PORT", "5432")
 	user := getEnv("TEST_DB_USER", "postgres")
-	password := getEnv("TEST_DB_PASSWORD", "password")
-	dbname := getEnv("TEST_DB_NAME", "ai_service_test")
+	password := getEnv("TEST_DB_PASSWORD", "")
+	dbname := getEnv("TEST_DB_NAME", "ai_service")
 	sslmode := getEnv("TEST_DB_SSLMODE", "disable")
 
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
