@@ -3,6 +3,7 @@ package outbound
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
 	"ai-service/cmd/config"
@@ -32,19 +33,45 @@ func (m *Manager) initProviders() {
 	defer m.mu.Unlock()
 
 	// Initialize OpenAI provider
-	if m.config.AIProviders.OpenAI.APIKey != "" {
+	if m.config.AIProviders.OpenAI.APIKey != "" && !isPlaceholderAPIKey(m.config.AIProviders.OpenAI.APIKey) {
 		m.providers[model.OpenAI] = NewOpenAIProvider(m.config.AIProviders.OpenAI.APIKey)
 	}
 
 	// Initialize Gemini provider
-	if m.config.AIProviders.Gemini.APIKey != "" {
+	if m.config.AIProviders.Gemini.APIKey != "" && !isPlaceholderAPIKey(m.config.AIProviders.Gemini.APIKey) {
 		m.providers[model.Gemini] = NewGeminiProvider(m.config.AIProviders.Gemini.APIKey)
 	}
 
 	// Note: Anthropic provider would be initialized here when implemented
-	// if m.config.AIProviders.Anthropic.APIKey != "" {
+	// if m.config.AIProviders.Anthropic.APIKey != "" && !isPlaceholderAPIKey(m.config.AIProviders.Anthropic.APIKey) {
 	//     m.providers[model.Anthropic] = NewAnthropicProvider(m.config.AIProviders.Anthropic.APIKey)
 	// }
+}
+
+// isPlaceholderAPIKey checks if the API key is a placeholder value
+func isPlaceholderAPIKey(apiKey string) bool {
+	placeholders := []string{
+		"your_openai_api_key_here",
+		"your_gemini_api_key_here",
+		"your_anthropic_api_key_here",
+		"your-api-key-here",
+		"your_api_key_here",
+		"placeholder",
+		"",
+	}
+
+	for _, placeholder := range placeholders {
+		if apiKey == placeholder {
+			return true
+		}
+	}
+
+	// Check if it contains placeholder-like patterns
+	if len(apiKey) < 10 || strings.Contains(apiKey, "your_") || strings.Contains(apiKey, "placeholder") {
+		return true
+	}
+
+	return false
 }
 
 func (m *Manager) Generate(ctx context.Context, req *model.GenerationRequest) (*model.GenerationResponse, error) {
@@ -53,7 +80,11 @@ func (m *Manager) Generate(ctx context.Context, req *model.GenerationRequest) (*
 	m.mu.RUnlock()
 
 	if !exists {
-		return nil, fmt.Errorf("provider %s not found", req.Provider)
+		// Check if any providers are configured
+		if len(m.providers) == 0 {
+			return nil, fmt.Errorf("no AI providers configured. Please set at least one API key (OPENAI_API_KEY, GEMINI_API_KEY, or ANTHROPIC_API_KEY)")
+		}
+		return nil, fmt.Errorf("provider %s not found. Available providers: %v", req.Provider, m.getAvailableProviderNames())
 	}
 
 	if !provider.IsAvailable() {
@@ -225,4 +256,13 @@ func (m *Manager) GetProvider(providerType model.AIProvider) (Provider, error) {
 func (m *Manager) GetDefaultProvider() model.AIProvider {
 	// For now, return OpenAI as default
 	return model.OpenAI
+}
+
+// getAvailableProviderNames returns a list of available provider names
+func (m *Manager) getAvailableProviderNames() []string {
+	var names []string
+	for provider := range m.providers {
+		names = append(names, string(provider))
+	}
+	return names
 }

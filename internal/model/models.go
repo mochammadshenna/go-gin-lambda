@@ -95,9 +95,9 @@ type AIProviderComparison struct {
 }
 
 type ProviderStats struct {
-	Provider         string `json:"provider"`
-	TotalGenerations int    `json:"total_generations"`
-	TotalTokens      int    `json:"total_tokens"`
-	AvgDuration      int    `json:"avg_duration"`
-	ErrorCount       int    `json:"error_count"`
+	Provider         string  `json:"provider"`
+	TotalGenerations int     `json:"total_generations"`
+	TotalTokens      int     `json:"total_tokens"`
+	AvgDuration      float64 `json:"avg_duration"`
+	ErrorCount       int     `json:"error_count"`
 }

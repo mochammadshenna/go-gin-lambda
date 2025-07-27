@@ -9,7 +9,6 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type DB struct {
@@ -18,42 +17,37 @@ type DB struct {
 
 // DatabaseConfig holds database configuration
 type DatabaseConfig struct {
-	DBType      string
 	Host        string
 	Port        string
 	User        string
 	Password    string
 	DBName      string
-	DBPath      string
 	SSLMode     string
 	MaxOpen     int
 	MaxIdle     int
 	MaxLifetime time.Duration
 }
 
-// NewDB creates a new database connection (SQLite or PostgreSQL)
+// NewDB creates a new PostgreSQL database connection
 func NewDB() *DB {
 	config := getDatabaseConfig()
 
-	var db *sql.DB
-	var err error
-
-	switch config.DBType {
-	case "postgres":
-		dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+	// Build connection string based on whether password is provided
+	var dsn string
+	if config.Password != "" {
+		dsn = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 			config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
-		db, err = sql.Open("postgres", dsn)
-		log.Println("Connecting to PostgreSQL database...")
-	case "sqlite", "":
-		db, err = sql.Open("sqlite3", config.DBPath)
-		log.Println("Connecting to SQLite database...")
-	default:
-		log.Fatalf("Unsupported database type: %s", config.DBType)
+	} else {
+		dsn = fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s",
+			config.Host, config.Port, config.User, config.DBName, config.SSLMode)
 	}
 
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Fatalf("Failed to connect to PostgreSQL database: %v", err)
 	}
+
+	log.Println("Connecting to PostgreSQL database...")
 
 	// Configure connection pool
 	db.SetMaxOpenConns(config.MaxOpen)
@@ -65,36 +59,26 @@ func NewDB() *DB {
 	defer cancel()
 
 	if err := db.PingContext(ctx); err != nil {
-		log.Fatalf("Failed to ping database: %v", err)
+		log.Fatalf("Failed to ping PostgreSQL database: %v", err)
 	}
 
-	log.Printf("Successfully connected to %s database", config.DBType)
+	log.Println("Successfully connected to PostgreSQL database")
 	return &DB{db}
 }
 
 // getDatabaseConfig returns database configuration from environment variables
 func getDatabaseConfig() DatabaseConfig {
-	dbType := getEnv("DB_TYPE", "sqlite")
-
-	config := DatabaseConfig{
-		DBType:      dbType,
+	return DatabaseConfig{
+		Host:        getEnv("DB_HOST", "localhost"),
+		Port:        getEnv("DB_PORT", "5432"),
+		User:        getEnv("DB_USER", "postgres"),
+		Password:    getEnv("DB_PASSWORD", ""), // Empty password for local development
+		DBName:      getEnv("DB_NAME", "ai_service"),
+		SSLMode:     getEnv("DB_SSLMODE", "disable"),
 		MaxOpen:     getEnvAsInt("DB_MAX_OPEN", 25),
 		MaxIdle:     getEnvAsInt("DB_MAX_IDLE", 5),
 		MaxLifetime: getEnvAsDuration("DB_MAX_LIFETIME", 5*time.Minute),
 	}
-
-	if dbType == "postgres" {
-		config.Host = getEnv("DB_HOST", "localhost")
-		config.Port = getEnv("DB_PORT", "5432")
-		config.User = getEnv("DB_USER", "postgres")
-		config.Password = getEnv("DB_PASSWORD", "password")
-		config.DBName = getEnv("DB_NAME", "ai_service")
-		config.SSLMode = getEnv("DB_SSLMODE", "disable")
-	} else {
-		config.DBPath = getEnv("DB_PATH", "ai_service.db")
-	}
-
-	return config
 }
 
 // getEnv gets environment variable with fallback

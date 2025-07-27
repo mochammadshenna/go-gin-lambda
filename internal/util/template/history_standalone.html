@@ -4,150 +4,930 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}} - AI Service</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Generation History - AI Studio</title>
+
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        .navbar-brand {
-            font-weight: bold;
+        :root {
+            /* Ultra-modern color palette */
+            --primary: #7c3aed;
+            --primary-light: #a855f7;
+            --primary-dark: #5b21b6;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+
+            /* Sophisticated neutrals */
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray-900: #111827;
+            --gray-800: #1f2937;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --gray-500: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
+            --gray-200: #e5e7eb;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+
+            --white: #ffffff;
+            --bg: #fafafa;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.8);
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
+
+            /* Enhanced shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #06b6d4 100%);
+            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+
+            /* Border radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-3xl: 2rem;
+
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
         }
 
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .history-item {
-            border-left: 3px solid #dee2e6;
-            transition: border-left-color 0.3s ease;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .history-item:hover {
-            border-left-color: #0d6efd;
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
         }
 
-        .history-content {
-            max-height: 100px;
+        @keyframes backgroundShift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(-10px, -10px) scale(1.02);
+            }
+
+            50% {
+                transform: translate(10px, -5px) scale(0.98);
+            }
+
+            75% {
+                transform: translate(-5px, 10px) scale(1.01);
+            }
+        }
+
+        /* Modern Header with Glass Effect */
+        .header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all var(--transition-normal);
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-weight: 800;
+            font-size: 1.75rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            font-size: 2.25rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-xl);
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            background: rgba(124, 58, 237, 0.15);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: transform var(--transition-fast);
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: var(--space-lg);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        /* Filters with Glass Morphism */
+        .filters {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+            flex-wrap: wrap;
+            animation: slideInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--gray-800);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: 0.9rem;
+            background: var(--bg-card);
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .filter-select:hover {
+            border-color: var(--primary-light);
+        }
+
+        .refresh-btn {
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: var(--space-sm) var(--space-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            box-shadow: var(--shadow-md);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        /* History Cards with Enhanced Styling */
+        .history-grid {
+            display: grid;
+            gap: var(--space-xl);
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .history-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--primary);
+        }
+
+        .history-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+        }
+
+        .history-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .history-meta {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-xl);
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .meta-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .meta-badge.provider {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            color: var(--primary);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .meta-badge.model {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            color: var(--secondary);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .meta-badge.status {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .meta-badge.tokens {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            color: var(--accent);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .history-title {
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--space-sm);
+            font-size: 1.2rem;
+        }
+
+        .history-prompt {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            margin-bottom: var(--space-lg);
+            line-height: 1.6;
+            background: var(--bg-card);
+            padding: var(--space-md);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+        }
+
+        .history-response {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            max-height: 250px;
             overflow-y: auto;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .history-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .history-date {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            background: var(--bg-card);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .action-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            color: var(--gray-600);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Empty State with Enhanced Styling */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-2xl);
+            color: var(--gray-500);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-2xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-xl);
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: var(--space-lg);
+            opacity: 0.6;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .empty-state h3 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-sm);
+            color: var(--gray-900);
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                padding: var(--space-md);
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .nav-links {
+                gap: var(--space-md);
+            }
+
+            .container {
+                padding: var(--space-md);
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+                padding: var(--space-lg);
+            }
+
+            .filter-group {
+                justify-content: space-between;
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .history-meta {
+                justify-content: center;
+            }
+
+            .history-footer {
+                flex-direction: column;
+                gap: var(--space-md);
+                align-items: stretch;
+            }
+
+            .history-actions {
+                justify-content: center;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --bg-card: #1e293b;
+                --bg-glass: rgba(30, 41, 59, 0.8);
+                --gray-900: #f1f5f9;
+                --gray-800: #e2e8f0;
+                --gray-700: #cbd5e1;
+                --gray-600: #94a3b8;
+                --gray-500: #64748b;
+                --gray-400: #475569;
+                --gray-300: #334155;
+                --gray-200: #1e293b;
+                --gray-100: #0f172a;
+                --gray-50: #020617;
+                --border: #334155;
+                --border-light: #1e293b;
+            }
+
+            body::before {
+                background:
+                    radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.2) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus Styles */
+        *:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-robot me-2"></i>AI Service
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav">
+            <a href="/" class="logo">
+                <i class="fas fa-brain"></i>
+                AI Studio
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
-                <a class="nav-link active" href="/history"><i class="fas fa-history me-1"></i>History</a>
-                <a class="nav-link" href="/stats"><i class="fas fa-chart-bar me-1"></i>Stats</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="/history" class="nav-link active">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/stats" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Stats
+                </a>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <main class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-history me-2"></i>Generation History
-                        </h5>
-                        <div class="d-flex gap-2">
-                            <select class="form-select form-select-sm" id="providerFilter" style="width: auto;">
-                                <option value="">All Providers</option>
-                                {{range $provider, $name := .Providers}}
-                                <option value="{{$provider}}" {{if eq $provider $.CurrentFilter}}selected{{end}}>
-                                    {{$name}}</option>
-                                {{end}}
-                            </select>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshBtn">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Generation History</h1>
+            <p>Track your AI generation journey and explore past creations</p>
+        </section>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label">Provider:</label>
+                <select class="filter-select" id="providerFilter">
+                    <option value="">All Providers</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="gemini">Google Gemini</option>
+                    <option value="anthropic">Anthropic Claude</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Status:</label>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="success">Success</option>
+                    <option value="error">Error</option>
+                </select>
+            </div>
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+        </div>
+
+        <!-- History Grid -->
+        <div class="history-grid" id="historyGrid">
+            {{if .Generations}}
+            {{range .Generations}}
+            <div class="history-card" data-provider="{{.Provider}}" data-status="{{.Status}}">
+                <div class="history-header">
+                    <div class="history-meta">
+                        <div class="meta-badge provider">
+                            <i class="fas fa-robot"></i>
+                            {{.Provider}}
+                        </div>
+                        <div class="meta-badge model">
+                            <i class="fas fa-cog"></i>
+                            {{.Model}}
+                        </div>
+                        <div class="meta-badge status">
+                            <i class="fas fa-check-circle"></i>
+                            {{.Status}}
+                        </div>
+                        <div class="meta-badge tokens">
+                            <i class="fas fa-tokens"></i>
+                            {{.TokensUsed}} tokens
                         </div>
                     </div>
-                    <div class="card-body">
-                        {{if .Histories}}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Provider</th>
-                                        <th>Model</th>
-                                        <th>Prompt</th>
-                                        <th>Response</th>
-                                        <th>Tokens</th>
-                                        <th>Duration</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{range .Histories}}
-                                    <tr class="history-item">
-                                        <td>
-                                            <span class="badge bg-primary">{{.Provider}}</span>
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">{{.Model}}</small>
-                                        </td>
-                                        <td>
-                                            <div class="history-content">
-                                                <small>{{.Prompt}}</small>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="history-content">
-                                                <small>{{.Response}}</small>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">{{.TokensUsed}}</span>
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">{{.Duration}}ms</small>
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">{{.CreatedAt.Format "2006-01-02 15:04"}}</small>
-                                        </td>
-                                    </tr>
-                                    {{end}}
-                                </tbody>
-                            </table>
-                        </div>
-                        {{else}}
-                        <div class="text-center py-5">
-                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No generation history found</h5>
-                            <p class="text-muted">Start generating content to see your history here.</p>
-                            <a href="/" class="btn btn-primary">
-                                <i class="fas fa-magic me-2"></i>Generate Content
-                            </a>
-                        </div>
-                        {{end}}
+                </div>
+
+                <div class="history-title">AI Generation</div>
+                <div class="history-prompt">{{.Prompt}}</div>
+
+                <div class="history-response">{{.Response}}</div>
+
+                <div class="history-footer">
+                    <div class="history-date">
+                        <i class="fas fa-calendar"></i>
+                        {{.CreatedAt.Format "Jan 02, 2006 15:04"}}
+                    </div>
+                    <div class="history-actions">
+                        <button class="action-btn" onclick="copyToClipboard('{{.Response}}')" title="Copy response">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
+                        <button class="action-btn" onclick="viewDetails('{{.ID}}')" title="View details">
+                            <i class="fas fa-eye"></i>
+                            Details
+                        </button>
                     </div>
                 </div>
             </div>
+            {{end}}
+            {{else}}
+            <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <h3>No Generations Yet</h3>
+                <p>Start creating amazing content with AI to see your history here</p>
+            </div>
+            {{end}}
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Provider filter functionality
-        document.getElementById('providerFilter').addEventListener('change', function () {
-            const provider = this.value;
-            const url = new URL(window.location);
-            if (provider) {
-                url.searchParams.set('provider', provider);
+        // Header scroll effect
+        window.addEventListener('scroll', function () {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
             } else {
-                url.searchParams.delete('provider');
+                header.classList.remove('scrolled');
             }
-            window.location.href = url.toString();
         });
 
-        // Refresh button
+        // Filter functionality with enhanced animations
+        document.getElementById('providerFilter').addEventListener('change', filterHistory);
+        document.getElementById('statusFilter').addEventListener('change', filterHistory);
+
         document.getElementById('refreshBtn').addEventListener('click', function () {
-            window.location.reload();
+            // Add loading animation
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            this.disabled = true;
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        });
+
+        function filterHistory() {
+            const providerFilter = document.getElementById('providerFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const cards = document.querySelectorAll('.history-card');
+
+            cards.forEach((card, index) => {
+                const provider = card.dataset.provider;
+                const status = card.dataset.status;
+
+                const providerMatch = !providerFilter || provider === providerFilter;
+                const statusMatch = !statusFilter || status === statusFilter;
+
+                if (providerMatch && statusMatch) {
+                    card.style.display = 'block';
+                    card.style.animation = `slideInUp 0.5s ease ${index * 0.1}s both`;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Copy to clipboard with enhanced feedback
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target.closest('.action-btn');
+                const originalHTML = btn.innerHTML;
+
+                // Enhanced success animation
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = 'var(--success)';
+                btn.style.color = 'var(--white)';
+                btn.style.transform = 'scale(1.1)';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = 'var(--bg-card)';
+                    btn.style.color = 'var(--gray-600)';
+                    btn.style.transform = 'scale(1)';
+                }, 2000);
+            });
+        }
+
+        // View details with enhanced UX
+        function viewDetails(id) {
+            // Create a modal-like effect
+            const card = event.target.closest('.history-card');
+            card.style.transform = 'scale(0.98)';
+            card.style.boxShadow = 'var(--shadow-2xl)';
+
+            setTimeout(() => {
+                card.style.transform = 'translateY(-8px)';
+                card.style.boxShadow = 'var(--shadow-xl)';
+            }, 150);
+
+            // Show enhanced alert (in real app, this would be a modal)
+            alert('Enhanced details view coming soon! This will show full generation details, metadata, and allow for regeneration.');
+        }
+
+        // Add staggered animation for cards on load
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.history-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
         });
     </script>
 </body>

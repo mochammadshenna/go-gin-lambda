@@ -4,180 +4,1063 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}} - AI Service</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>AI Studio - Next-Gen AI Generation</title>
+
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        .navbar-brand {
-            font-weight: bold;
+        :root {
+            /* Ultra-modern color palette */
+            --primary: #7c3aed;
+            --primary-light: #a855f7;
+            --primary-dark: #5b21b6;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+
+            /* Sophisticated neutrals */
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray-900: #111827;
+            --gray-800: #1f2937;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --gray-500: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
+            --gray-200: #e5e7eb;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+
+            --white: #ffffff;
+            --bg: #fafafa;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.8);
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
+
+            /* Enhanced shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #06b6d4 100%);
+            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+
+            /* Border radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-3xl: 2rem;
+
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
         }
 
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(-10px, -10px) scale(1.02);
+            }
+
+            50% {
+                transform: translate(10px, -5px) scale(0.98);
+            }
+
+            75% {
+                transform: translate(-5px, 10px) scale(1.01);
+            }
+        }
+
+        /* Modern Header with Glass Effect */
+        .header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all var(--transition-normal);
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-weight: 800;
+            font-size: 1.75rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            font-size: 2.25rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-xl);
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            transition: transform var(--transition-fast);
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: var(--space-lg);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto var(--space-2xl);
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        /* Main Card with Glass Morphism */
+        .main-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-3xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            animation: slideInUp 1s ease 0.2s both;
+            position: relative;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-primary);
+            opacity: 0.3;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-header {
+            background: var(--gradient-primary);
+            padding: var(--space-2xl);
+            color: var(--white);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: patternMove 20s linear infinite;
+        }
+
+        @keyframes patternMove {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(60px, 60px);
+            }
+        }
+
+        .card-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: var(--space-2xl);
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+
+        /* Form Groups with Enhanced Styling */
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: var(--space-sm);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .form-label::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 20px;
+            height: 2px;
+            background: var(--gradient-primary);
+            border-radius: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-lg) var(--space-xl);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xl);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all var(--transition-normal);
+            background: var(--bg-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1), var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        /* Provider Cards with Hover Effects */
+        .provider-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .provider-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-xl);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .provider-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+        }
+
+        .provider-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--primary);
+        }
+
+        .provider-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .provider-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .provider-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .provider-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-lg);
+            display: block;
+            transition: all var(--transition-normal);
+        }
+
+        .provider-card:hover .provider-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .provider-name {
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            color: var(--gray-900);
+            font-size: 1.1rem;
+        }
+
+        .provider-desc {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        /* Model Selector */
+        .model-selector {
+            position: relative;
+        }
+
+        .model-selector .form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 3rem;
+        }
+
+        /* Temperature Slider with Enhanced Styling */
+        .temperature-group {
+            position: relative;
+        }
+
+        .temperature-display {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-xl);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transform: translateY(-50%);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+
+        .temperature-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--gray-200);
+            outline: none;
+            -webkit-appearance: none;
+            margin-top: var(--space-lg);
+            cursor: pointer;
+        }
+
+        .temperature-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-fast);
+            border: 3px solid var(--white);
+        }
+
+        .temperature-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .temperature-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            border: 3px solid var(--white);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Text Areas */
+        .form-control.textarea {
+            min-height: 140px;
+            resize: vertical;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.7;
+        }
+
+        /* Action Buttons with Microinteractions */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: var(--space-lg) var(--space-2xl);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--gray-700);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            color: var(--gray-900);
+            border-color: var(--gray-300);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Loading Animation with Enhanced Styling */
         .loading {
             display: none;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-lg);
+            padding: var(--space-2xl);
+            color: var(--gray-600);
+            background: var(--bg-glass);
+            border-radius: var(--radius-2xl);
+            margin: var(--space-xl) 0;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--gray-200);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Result Section with Glass Morphism */
+        .result-section {
+            display: none;
+            margin-top: var(--space-2xl);
+            animation: fadeInUp 0.6s ease;
         }
 
         .result-card {
-            background-color: #f8f9fa;
-            border-left: 4px solid #0d6efd;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-2xl);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
         }
 
-        .provider-info {
-            background-color: #e9ecef;
-            border-radius: 0.375rem;
-            padding: 1rem;
-            margin-top: 1rem;
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .result-meta {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            background: var(--bg-card);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .meta-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .result-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        /* Copy Button with Enhanced Styling */
+        .copy-btn {
+            position: absolute;
+            top: var(--space-lg);
+            right: var(--space-lg);
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            color: var(--gray-600);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                padding: var(--space-md);
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .nav-links {
+                gap: var(--space-md);
+            }
+
+            .container {
+                padding: var(--space-md);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .provider-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .result-meta {
+                flex-direction: column;
+            }
+
+            .meta-item {
+                justify-content: center;
+            }
+
+            .card-header {
+                padding: var(--space-xl);
+            }
+
+            .card-body {
+                padding: var(--space-xl);
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --bg-card: #1e293b;
+                --bg-glass: rgba(30, 41, 59, 0.8);
+                --gray-900: #f1f5f9;
+                --gray-800: #e2e8f0;
+                --gray-700: #cbd5e1;
+                --gray-600: #94a3b8;
+                --gray-500: #64748b;
+                --gray-400: #475569;
+                --gray-300: #334155;
+                --gray-200: #1e293b;
+                --gray-100: #0f172a;
+                --gray-50: #020617;
+                --border: #334155;
+                --border-light: #1e293b;
+            }
+
+            body::before {
+                background:
+                    radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.2) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus Styles */
+        *:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-robot me-2"></i>AI Service
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav">
+            <a href="/" class="logo">
+                <i class="fas fa-brain"></i>
+                AI Studio
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
-                <a class="nav-link" href="/history"><i class="fas fa-history me-1"></i>History</a>
-                <a class="nav-link" href="/stats"><i class="fas fa-chart-bar me-1"></i>Stats</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="/history" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/stats" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Stats
+                </a>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <main class="container mt-4">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-magic me-2"></i>AI Content Generation
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="generationForm">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="provider" class="form-label">AI Provider</label>
-                                    <select class="form-select" id="provider" name="provider" required>
-                                        <option value="">Select Provider</option>
-                                        {{range $provider, $info := .Providers}}
-                                        <option value="{{$provider}}">{{$info.Name}}</option>
-                                        {{end}}
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="model" class="form-label">Model</label>
-                                    <select class="form-select" id="model" name="model" required>
-                                        <option value="">Select Model</option>
-                                    </select>
-                                </div>
-                            </div>
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>AI Studio</h1>
+            <p>Experience the future of AI generation with cutting-edge models and intuitive design</p>
+        </section>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="temperature" class="form-label">Temperature</label>
-                                    <input type="range" class="form-range" id="temperature" name="temperature" min="0"
-                                        max="1" step="0.1" value="0.7">
-                                    <small class="text-muted">Current: <span id="tempValue">0.7</span></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="maxTokens" class="form-label">Max Tokens</label>
-                                    <input type="number" class="form-control" id="maxTokens" name="maxTokens" min="1"
-                                        max="8192" value="1000">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="systemMsg" class="form-label">System Message (Optional)</label>
-                                <textarea class="form-control" id="systemMsg" name="systemMsg" rows="2"
-                                    placeholder="Set the AI's role or behavior..."></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="prompt" class="form-label">Prompt</label>
-                                <textarea class="form-control" id="prompt" name="prompt" rows="6"
-                                    placeholder="Enter your prompt here..." required></textarea>
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-magic me-2"></i>Generate Content
-                                </button>
-                            </div>
-                        </form>
-
-                        <div id="providerInfo" class="provider-info" style="display: none;"></div>
-
-                        <div id="loading" class="loading text-center mt-4">
-                            <div class="spinner-border text-primary" role="status"></div>
-                            <p class="mt-2">Generating content...</p>
-                        </div>
-
-                        <div id="result" class="result-card mt-4" style="display: none;">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">
-                                    <i class="fas fa-check-circle text-success me-2"></i>Generated Content
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div id="resultContent"></div>
-                                <div class="mt-3">
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>Duration: <span id="resultDuration"></span> |
-                                        <i class="fas fa-tokens me-1"></i>Tokens: <span id="resultTokens"></span>
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Main Card -->
+        <div class="main-card">
+            <div class="card-header">
+                <h2>Create Something Amazing</h2>
+                <p>Choose your AI provider and start generating content</p>
             </div>
 
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="card-title mb-0">
-                            <i class="fas fa-lightbulb me-2"></i>Quick Examples
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            <button type="button" class="list-group-item list-group-item-action"
-                                onclick="loadExample('code')">
-                                <i class="fas fa-code me-2"></i>Code Generation
-                            </button>
-                            <button type="button" class="list-group-item list-group-item-action"
-                                onclick="loadExample('writing')">
-                                <i class="fas fa-pen me-2"></i>Content Writing
-                            </button>
-                            <button type="button" class="list-group-item list-group-item-action"
-                                onclick="loadExample('analysis')">
-                                <i class="fas fa-chart-line me-2"></i>Data Analysis
-                            </button>
+            <div class="card-body">
+                <form id="generationForm">
+                    <!-- Provider Selection -->
+                    <div class="form-group">
+                        <label class="form-label">AI Provider</label>
+                        <div class="provider-cards" id="providerCards">
+                            <div class="provider-card" data-provider="openai">
+                                <i class="fas fa-robot provider-icon" style="color: #10a37f;"></i>
+                                <div class="provider-name">OpenAI</div>
+                                <div class="provider-desc">Advanced language models for text generation</div>
+                            </div>
+                            <div class="provider-card" data-provider="gemini">
+                                <i class="fas fa-brain provider-icon" style="color: #4285f4;"></i>
+                                <div class="provider-name">Google Gemini</div>
+                                <div class="provider-desc">Multimodal AI with fast response times</div>
+                            </div>
+                            <div class="provider-card" data-provider="anthropic">
+                                <i class="fas fa-shield-alt provider-icon" style="color: #d97706;"></i>
+                                <div class="provider-name">Anthropic Claude</div>
+                                <div class="provider-desc">Constitutional AI for safe and helpful responses</div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Form Grid -->
+                    <div class="form-grid">
+                        <!-- Model Selection -->
+                        <div class="form-group model-selector">
+                            <label class="form-label">Model</label>
+                            <select class="form-control" id="model" name="model" required>
+                                <option value="">Select a model</option>
+                            </select>
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class="form-group temperature-group">
+                            <label class="form-label">Creativity Level</label>
+                            <div class="temperature-display" id="tempValue">0.7</div>
+                            <input type="range" class="temperature-slider" id="temperature" name="temperature" min="0"
+                                max="2" step="0.1" value="0.7">
+                        </div>
+
+                        <!-- Max Tokens -->
+                        <div class="form-group">
+                            <label class="form-label">Max Tokens</label>
+                            <input type="number" class="form-control" id="maxTokens" name="maxTokens" min="1" max="8192"
+                                value="1000" required>
+                        </div>
+                    </div>
+
+                    <!-- System Message -->
+                    <div class="form-group">
+                        <label class="form-label">System Message (Optional)</label>
+                        <textarea class="form-control textarea" id="systemMsg" name="systemMsg"
+                            placeholder="Define the AI's role or behavior..."></textarea>
+                    </div>
+
+                    <!-- User Prompt -->
+                    <div class="form-group">
+                        <label class="form-label">Your Prompt</label>
+                        <textarea class="form-control textarea" id="prompt" name="prompt"
+                            placeholder="What would you like the AI to help you with?" required></textarea>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary" id="generateBtn">
+                            <i class="fas fa-magic"></i>
+                            Generate Content
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="clearBtn">
+                            <i class="fas fa-eraser"></i>
+                            Clear Form
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading State -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <span>Generating your content...</span>
                 </div>
 
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <h6 class="card-title mb-0">
-                            <i class="fas fa-info-circle me-2"></i>Tips
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Be specific in your prompts
-                            </li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Use system messages for
-                                context</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Adjust temperature for
-                                creativity</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Set appropriate token limits</li>
-                        </ul>
+                <!-- Result Section -->
+                <div class="result-section" id="result">
+                    <div class="result-card">
+                        <button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <div class="result-header">
+                            <h3 class="result-title">Generated Content</h3>
+                            <div class="result-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="resultDuration">0ms</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-tokens"></i>
+                                    <span id="resultTokens">0 tokens</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span id="resultModel">Model</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-content" id="resultContent">
+                            Your generated content will appear here...
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,9 +1071,8 @@
     <div id="provider-models-data" data-json='{{.ProviderModelsJSON | safe}}' style="display: none;"></div>
     <div id="provider-data" data-json='{{.ProvidersJSON | safe}}' style="display: none;"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // FIXED VERSION - Handle HTML-escaped JSON properly
+        // Initialize data
         let providerModels, providerData;
 
         // Function to decode HTML entities
@@ -222,12 +1104,37 @@
             providerData = {};
         }
 
-        // Update models when provider changes
-        document.getElementById('provider').addEventListener('change', function () {
-            const provider = this.value;
-            const modelSelect = document.getElementById('model');
-            const providerInfo = document.getElementById('providerInfo');
+        // Header scroll effect
+        window.addEventListener('scroll', function () {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
 
+        // Provider card selection with enhanced animations
+        document.querySelectorAll('.provider-card').forEach(card => {
+            card.addEventListener('click', function () {
+                // Remove selection from all cards
+                document.querySelectorAll('.provider-card').forEach(c => {
+                    c.classList.remove('selected');
+                    c.style.transform = 'translateY(0) scale(1)';
+                });
+
+                // Add selection to clicked card
+                this.classList.add('selected');
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+
+                const provider = this.dataset.provider;
+                updateModels(provider);
+            });
+        });
+
+        // Update models when provider changes
+        function updateModels(provider) {
+            const modelSelect = document.getElementById('model');
             modelSelect.innerHTML = '<option value="">Select Model</option>';
 
             if (provider && providerModels[provider]) {
@@ -237,37 +1144,42 @@
                     option.textContent = model;
                     modelSelect.appendChild(option);
                 });
+            }
+        }
 
-                if (providerData[provider]) {
-                    const info = providerData[provider];
-                    providerInfo.innerHTML = `
-                        <h6>${info.Name}</h6>
-                        <p class="small text-muted">${info.Strengths || 'No description available'}</p>
-                        <div class="small">
-                            <strong>Best for:</strong> ${info.BestFor || 'General use'}<br>
-                            <strong>Max tokens:</strong> ${info.MaxTokens || 'Unknown'}<br>
-                            <strong>Pricing:</strong> ${info.Pricing || 'Contact provider'}
-                        </div>
-                    `;
-                    providerInfo.style.display = 'block';
-                }
+        // Temperature slider with enhanced feedback
+        document.getElementById('temperature').addEventListener('input', function () {
+            const value = this.value;
+            document.getElementById('tempValue').textContent = value;
+
+            // Add visual feedback
+            const display = document.getElementById('tempValue');
+            if (value < 0.5) {
+                display.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            } else if (value < 1.0) {
+                display.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
             } else {
-                providerInfo.style.display = 'none';
+                display.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
             }
         });
 
-        // Update temperature display
-        document.getElementById('temperature').addEventListener('input', function () {
-            document.getElementById('tempValue').textContent = this.value;
-        });
-
-        // Form submission
+        // Form submission with enhanced UX
         document.getElementById('generationForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            const selectedProvider = document.querySelector('.provider-card.selected');
+            if (!selectedProvider) {
+                // Add shake animation to provider cards
+                document.querySelectorAll('.provider-card').forEach(card => {
+                    card.style.animation = 'shake 0.5s ease-in-out';
+                    setTimeout(() => card.style.animation = '', 500);
+                });
+                return;
+            }
+
             const formData = new FormData(this);
             const data = {
-                provider: formData.get('provider'),
+                provider: selectedProvider.dataset.provider,
                 model: formData.get('model'),
                 prompt: formData.get('prompt'),
                 systemMsg: formData.get('systemMsg'),
@@ -275,8 +1187,14 @@
                 maxTokens: parseInt(formData.get('maxTokens'))
             };
 
-            document.getElementById('loading').style.display = 'block';
+            // Show loading with enhanced animation
+            document.getElementById('loading').style.display = 'flex';
             document.getElementById('result').style.display = 'none';
+            document.getElementById('generateBtn').disabled = true;
+
+            // Add loading animation to button
+            const btn = document.getElementById('generateBtn');
+            btn.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div> Generating...';
 
             try {
                 const response = await fetch('/api/generate', {
@@ -288,43 +1206,91 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    document.getElementById('resultContent').innerHTML = result.content.replace(/\n/g, '<br>');
+                    // Update result with smooth animation
+                    document.getElementById('resultContent').textContent = result.content;
                     document.getElementById('resultDuration').textContent = result.duration;
-                    document.getElementById('resultTokens').textContent = result.tokens_used;
-                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('resultTokens').textContent = `${result.tokens_used} tokens`;
+                    document.getElementById('resultModel').textContent = result.model;
+
+                    // Show result with enhanced animation
+                    const resultSection = document.getElementById('result');
+                    resultSection.style.display = 'block';
+                    resultSection.style.opacity = '0';
+                    resultSection.style.transform = 'translateY(20px)';
+
+                    setTimeout(() => {
+                        resultSection.style.transition = 'all 0.6s ease';
+                        resultSection.style.opacity = '1';
+                        resultSection.style.transform = 'translateY(0)';
+                    }, 100);
                 } else {
-                    alert('Error: ' + result.message);
+                    alert(`Error: ${result.error || 'Failed to generate content'}`);
                 }
             } catch (error) {
-                alert('Error: ' + error.message);
+                console.error('Error:', error);
+                alert('Failed to connect to the server');
             } finally {
+                // Hide loading and restore button
                 document.getElementById('loading').style.display = 'none';
+                document.getElementById('generateBtn').disabled = false;
+                btn.innerHTML = '<i class="fas fa-magic"></i> Generate Content';
             }
         });
 
-        // Load example prompts
-        function loadExample(type) {
-            const examples = {
-                code: {
-                    systemMsg: 'You are an expert software developer. Write clean, efficient, and well-documented code.',
-                    prompt: 'Write a function in Go that validates an email address using regex.'
-                },
-                writing: {
-                    systemMsg: 'You are a professional content writer. Create engaging and informative content.',
-                    prompt: 'Write a blog post introduction about the benefits of artificial intelligence in modern business.'
-                },
-                analysis: {
-                    systemMsg: 'You are a data analyst. Provide clear insights and actionable recommendations.',
-                    prompt: 'Analyze the impact of remote work on productivity and provide recommendations for companies.'
-                }
-            };
+        // Clear form with enhanced animation
+        document.getElementById('clearBtn').addEventListener('click', function () {
+            // Add fade out animation
+            const form = document.getElementById('generationForm');
+            form.style.transition = 'opacity 0.3s ease';
+            form.style.opacity = '0.5';
 
-            const example = examples[type];
-            if (example) {
-                document.getElementById('systemMsg').value = example.systemMsg;
-                document.getElementById('prompt').value = example.prompt;
+            setTimeout(() => {
+                document.getElementById('generationForm').reset();
+                document.getElementById('result').style.display = 'none';
+                document.querySelectorAll('.provider-card').forEach(c => {
+                    c.classList.remove('selected');
+                    c.style.transform = 'translateY(0) scale(1)';
+                });
+                document.getElementById('model').innerHTML = '<option value="">Select Model</option>';
+                document.getElementById('tempValue').textContent = '0.7';
+                document.getElementById('tempValue').style.background = 'var(--gradient-primary)';
+
+                // Fade back in
+                form.style.opacity = '1';
+            }, 300);
+        });
+
+        // Copy result with enhanced feedback
+        document.getElementById('copyBtn').addEventListener('click', function () {
+            const content = document.getElementById('resultContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                // Enhanced success animation
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                this.style.background = 'var(--success)';
+                this.style.transform = 'scale(1.2)';
+
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-copy"></i>';
+                    this.style.background = 'var(--bg-glass)';
+                    this.style.transform = 'scale(1)';
+                }, 2000);
+            });
+        });
+
+        // Add shake animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
             }
-        }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-select first provider
+        document.querySelector('.provider-card').classList.add('selected');
+        updateModels('openai');
     </script>
 </body>
 

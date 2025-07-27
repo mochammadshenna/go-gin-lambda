@@ -9,7 +9,9 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	"ai-service/internal/util/exception"
+
+	_ "github.com/lib/pq"
 )
 
 // TestDB holds test database connection
@@ -20,10 +22,10 @@ type TestDB struct {
 
 // NewTestDB creates a new test database connection
 func NewTestDB(t *testing.T) *TestDB {
-	// Use SQLite for testing
+	// Use PostgreSQL for testing
 	dsn := getTestDSN()
 
-	db, err := sql.Open("sqlite3", dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		t.Fatalf("Failed to connect to test database: %v", err)
 	}
@@ -49,8 +51,15 @@ func NewTestDB(t *testing.T) *TestDB {
 
 // getTestDSN returns test database connection string
 func getTestDSN() string {
-	dbname := getEnv("TEST_DB_NAME", ":memory:")
-	return dbname
+	host := getEnv("TEST_DB_HOST", "localhost")
+	port := getEnv("TEST_DB_PORT", "5432")
+	user := getEnv("TEST_DB_USER", "postgres")
+	password := getEnv("TEST_DB_PASSWORD", "password")
+	dbname := getEnv("TEST_DB_NAME", "ai_service_test")
+	sslmode := getEnv("TEST_DB_SSLMODE", "disable")
+
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		host, port, user, password, dbname, sslmode)
 }
 
 // getEnv gets environment variable with fallback
@@ -63,54 +72,62 @@ func getEnv(key, fallback string) string {
 
 // SetupTestDatabase sets up test database with migrations
 func (tdb *TestDB) SetupTestDatabase(t *testing.T) {
-	// SQLite-compatible schema
+	// PostgreSQL-compatible schema
 	schema := `
+	-- Enable UUID extension
+	CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+	
+	-- Create generations table
 	CREATE TABLE IF NOT EXISTS generations (
-		id TEXT PRIMARY KEY,
-		provider TEXT NOT NULL,
-		model TEXT NOT NULL,
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+		provider VARCHAR(50) NOT NULL,
+		model VARCHAR(100) NOT NULL,
 		prompt TEXT NOT NULL,
 		response TEXT NOT NULL,
 		tokens_used INTEGER NOT NULL DEFAULT 0,
 		duration_ms INTEGER NOT NULL DEFAULT 0,
-		status TEXT NOT NULL DEFAULT 'success',
+		status VARCHAR(20) NOT NULL DEFAULT 'success',
 		error_message TEXT,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 	);
 
+	-- Create providers table
 	CREATE TABLE IF NOT EXISTS providers (
-		id TEXT PRIMARY KEY,
-		name TEXT UNIQUE NOT NULL,
-		api_key_hash TEXT,
-		is_active BOOLEAN DEFAULT 1,
-		config TEXT,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+		name VARCHAR(50) UNIQUE NOT NULL,
+		api_key_hash VARCHAR(255),
+		is_active BOOLEAN DEFAULT true,
+		config JSONB,
+		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 	);
 
+	-- Create stats table for aggregated metrics
 	CREATE TABLE IF NOT EXISTS stats (
-		id TEXT PRIMARY KEY,
-		provider TEXT NOT NULL,
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+		provider VARCHAR(50) NOT NULL,
 		date DATE NOT NULL,
 		total_generations INTEGER DEFAULT 0,
 		total_tokens INTEGER DEFAULT 0,
 		avg_duration_ms INTEGER DEFAULT 0,
 		error_count INTEGER DEFAULT 0,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 		UNIQUE(provider, date)
 	);
 
+	-- Create api_keys table for secure key management
 	CREATE TABLE IF NOT EXISTS api_keys (
-		id TEXT PRIMARY KEY,
-		provider TEXT NOT NULL,
-		key_hash TEXT NOT NULL,
-		is_active BOOLEAN DEFAULT 1,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+		provider VARCHAR(50) NOT NULL,
+		key_hash VARCHAR(255) NOT NULL,
+		is_active BOOLEAN DEFAULT true,
+		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 	);
 
+	-- Create indexes for better performance
 	CREATE INDEX IF NOT EXISTS idx_generations_provider ON generations(provider);
 	CREATE INDEX IF NOT EXISTS idx_generations_created_at ON generations(created_at);
 	CREATE INDEX IF NOT EXISTS idx_generations_status ON generations(status);
@@ -118,9 +135,10 @@ func (tdb *TestDB) SetupTestDatabase(t *testing.T) {
 	CREATE INDEX IF NOT EXISTS idx_api_keys_provider ON api_keys(provider);
 	`
 
+	ctx := context.Background()
 	_, err := tdb.Exec(schema)
 	if err != nil {
-		t.Fatalf("Failed to setup test database schema: %v", err)
+		t.Fatalf("Failed to setup test database schema: %v", exception.TranslateDatabaseError(ctx, err))
 	}
 
 	log.Println("Test database setup completed")
@@ -212,14 +230,14 @@ func AssertNotNil(t *testing.T, value interface{}, message string) {
 func CreateTestGeneration(t *testing.T, db *sql.DB, provider, model, prompt, response string) string {
 	query := `
 		INSERT INTO generations (
-			id, provider, model, prompt, response, tokens_used, duration_ms, status
+			provider, model, prompt, response, tokens_used, duration_ms, status
 		) VALUES (
-			?, ?, ?, ?, ?, ?, ?, ?
-		)
+			$1, $2, $3, $4, $5, $6, $7
+		) RETURNING id
 	`
 
-	id := fmt.Sprintf("test-%d", time.Now().UnixNano())
-	_, err := db.Exec(query, id, provider, model, prompt, response, 100, 1000, "success")
+	var id string
+	err := db.QueryRow(query, provider, model, prompt, response, 100, 1000, "success").Scan(&id)
 	AssertNoError(t, err, "Failed to create test generation")
 
 	return id
@@ -229,15 +247,15 @@ func CreateTestGeneration(t *testing.T, db *sql.DB, provider, model, prompt, res
 func CreateTestProvider(t *testing.T, db *sql.DB, name string, isActive bool) string {
 	query := `
 		INSERT INTO providers (
-			id, name, is_active, config
+			name, is_active, config
 		) VALUES (
-			?, ?, ?, ?
-		)
+			$1, $2, $3
+		) RETURNING id
 	`
 
-	id := fmt.Sprintf("test-provider-%d", time.Now().UnixNano())
+	var id string
 	config := fmt.Sprintf(`{"default_model": "test-model", "max_tokens": 1000}`)
-	_, err := db.Exec(query, id, name, isActive, config)
+	err := db.QueryRow(query, name, isActive, config).Scan(&id)
 	AssertNoError(t, err, "Failed to create test provider")
 
 	return id

@@ -4,6 +4,7 @@ import (
 	"ai-service/internal/model"
 	"ai-service/internal/outbound"
 	"ai-service/internal/repository"
+	"fmt"
 	"log"
 	"time"
 
@@ -146,29 +147,30 @@ func (c *aiController) GetProviders(ctx *gin.Context) {
 }
 
 func (c *aiController) GetHistory(ctx *gin.Context) {
-	history := []gin.H{
-		{
-			"id":          "gen-123",
-			"provider":    "openai",
-			"model":       "gpt-3.5-turbo",
-			"prompt":      "Write a hello world program in Go",
-			"response":    "Here's a simple hello world program in Go...",
-			"tokens_used": 150,
-			"duration":    "2.5s",
-			"created_at":  "2024-01-15T10:30:00Z",
-			"status":      "success",
-		},
-		{
-			"id":          "gen-124",
-			"provider":    "gemini",
-			"model":       "gemini-1.5-flash",
-			"prompt":      "Explain quantum computing",
-			"response":    "Quantum computing is a revolutionary technology...",
-			"tokens_used": 300,
-			"duration":    "1.8s",
-			"created_at":  "2024-01-15T09:15:00Z",
-			"status":      "success",
-		},
+	generations, err := c.generationRepo.GetRecent(ctx, 50, 0)
+	if err != nil {
+		log.Printf("Failed to load generation history: %v", err)
+		ctx.JSON(500, gin.H{
+			"error":   "Failed to load generation history",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	// Convert to API response format
+	history := make([]gin.H, len(generations))
+	for i, gen := range generations {
+		history[i] = gin.H{
+			"id":          gen.ID,
+			"provider":    gen.Provider,
+			"model":       gen.Model,
+			"prompt":      gen.Prompt,
+			"response":    gen.Response,
+			"tokens_used": gen.TokensUsed,
+			"duration":    fmt.Sprintf("%dms", gen.Duration),
+			"created_at":  gen.CreatedAt.Format(time.RFC3339),
+			"status":      gen.Status,
+		}
 	}
 
 	ctx.JSON(200, gin.H{
@@ -178,40 +180,64 @@ func (c *aiController) GetHistory(ctx *gin.Context) {
 }
 
 func (c *aiController) GetStats(ctx *gin.Context) {
-	stats := map[string]gin.H{
-		"openai": {
-			"provider":          "openai",
-			"total_generations": 150,
-			"total_tokens":      45000,
-			"avg_duration":      2.5,
-			"error_count":       3,
-			"success_rate":      98.0,
-		},
-		"gemini": {
-			"provider":          "gemini",
-			"total_generations": 75,
-			"total_tokens":      25000,
-			"avg_duration":      1.8,
-			"error_count":       1,
-			"success_rate":      98.7,
-		},
-		"anthropic": {
-			"provider":          "anthropic",
-			"total_generations": 25,
-			"total_tokens":      8000,
-			"avg_duration":      3.2,
-			"error_count":       0,
-			"success_rate":      100.0,
-		},
+	// Get stats for the last 30 days
+	endDate := time.Now()
+	startDate := endDate.AddDate(0, 0, -30)
+
+	providerStats, err := c.generationRepo.GetStats(ctx, startDate, endDate)
+	if err != nil {
+		log.Printf("Failed to load usage statistics: %v", err)
+		ctx.JSON(500, gin.H{
+			"error":   "Failed to load usage statistics",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	// Convert to API response format
+	stats := make(map[string]gin.H)
+	var totalGenerations, totalTokens, totalErrors int
+	var totalDuration int64
+
+	for _, stat := range providerStats {
+		totalGenerations += stat.TotalGenerations
+		totalTokens += stat.TotalTokens
+		totalErrors += stat.ErrorCount
+		totalDuration += int64(stat.AvgDuration * float64(stat.TotalGenerations))
+
+		successRate := 100.0
+		if stat.TotalGenerations > 0 {
+			successRate = float64(stat.TotalGenerations-stat.ErrorCount) / float64(stat.TotalGenerations) * 100
+		}
+
+		stats[stat.Provider] = gin.H{
+			"provider":          stat.Provider,
+			"total_generations": stat.TotalGenerations,
+			"total_tokens":      stat.TotalTokens,
+			"avg_duration":      stat.AvgDuration,
+			"error_count":       stat.ErrorCount,
+			"success_rate":      successRate,
+		}
+	}
+
+	avgDuration := float64(0)
+	if totalGenerations > 0 {
+		avgDuration = float64(totalDuration) / float64(totalGenerations)
+	}
+
+	successRate := 100.0
+	if totalGenerations > 0 {
+		successRate = float64(totalGenerations-totalErrors) / float64(totalGenerations) * 100
 	}
 
 	ctx.JSON(200, gin.H{
 		"stats": stats,
 		"summary": gin.H{
-			"total_generations": 250,
-			"total_tokens":      78000,
-			"avg_duration":      2.3,
-			"total_errors":      4,
+			"total_generations": totalGenerations,
+			"total_tokens":      totalTokens,
+			"avg_duration":      avgDuration,
+			"total_errors":      totalErrors,
+			"success_rate":      successRate,
 		},
 	})
 }

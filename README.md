@@ -163,7 +163,7 @@ flowchart LR
 ### Prerequisites
 
 - Go 1.21 or higher
-- SQLite3 (for development) or PostgreSQL (for production)
+- PostgreSQL
 - [sqlc](https://sqlc.dev/) - SQL compiler for Go
 
 ### Installing sqlc

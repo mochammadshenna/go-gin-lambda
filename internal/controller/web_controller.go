@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"ai-service/internal/model"
 	"ai-service/internal/repository"
 	"ai-service/internal/util/template"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -89,8 +91,9 @@ func (c *webController) Home(ctx *gin.Context) {
 func (c *webController) History(ctx *gin.Context) {
 	generations, err := c.generationRepo.GetRecent(ctx, 50, 0) // Get last 50 generations
 	if err != nil {
-		ctx.String(http.StatusInternalServerError, "Failed to load generation history: "+err.Error())
-		return
+		log.Printf("Failed to load generation history: %v", err)
+		// Provide empty data instead of failing
+		generations = []*model.GenerationHistory{}
 	}
 
 	data := gin.H{
@@ -116,8 +119,9 @@ func (c *webController) Stats(ctx *gin.Context) {
 
 	providerStats, err := c.generationRepo.GetStats(ctx, startDate, endDate)
 	if err != nil {
-		ctx.String(http.StatusInternalServerError, "Failed to load usage statistics: "+err.Error())
-		return
+		log.Printf("Failed to load usage statistics: %v", err)
+		// Provide fallback data instead of failing
+		providerStats = []*model.ProviderStats{}
 	}
 
 	// Calculate totals
@@ -133,7 +137,7 @@ func (c *webController) Stats(ctx *gin.Context) {
 		}
 	}
 
-	// Format data for template
+	// Format data for template with fallback values
 	statsData := gin.H{
 		"TotalGenerations":           totalGenerations,
 		"TotalTokensUsed":            totalTokens,

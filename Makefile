@@ -126,8 +126,8 @@ build-all: build build-linux ## Build for all target platforms
 # =============================================================================
 # RUN
 # =============================================================================
-run: ## Run the service locally with SQLite (default)
-	@echo "🚀 Starting AI Service with SQLite..."
+run: ## Run the service locally with PostgreSQL
+	@echo "🚀 Starting AI Service with PostgreSQL..."
 	@echo "📡 Server will be available at: http://localhost:8080"
 	@echo "📚 API Documentation: http://localhost:8080/swagger/index.html"
 	@PORT=8080 go run cmd/main/main.go
@@ -193,8 +193,8 @@ docker-run: ## Run Docker container
 	@echo "🐳 Running Docker container..."
 	docker run -p 8080:8080 --env-file .env $(DOCKER_IMAGE):latest
 
-docker-compose-up: ## Start services with docker-compose (SQLite)
-	@echo "🐳 Starting services with docker-compose (SQLite)..."
+docker-compose-up: ## Start services with docker-compose (PostgreSQL)
+	@echo "🐳 Starting services with docker-compose (PostgreSQL)..."
 	docker-compose up -d
 	@echo "✅ Services started"
 
@@ -224,7 +224,7 @@ docker-clean: ## Clean Docker images and containers
 # =============================================================================
 # DATABASE
 # =============================================================================
-db-reset: ## Reset the database (SQLite)
+db-reset: ## Reset the database (PostgreSQL)
 	@echo "🗄️  Resetting database..."
 	rm -f ai_service.db
 	@echo "✅ Database reset complete"
@@ -233,7 +233,7 @@ db-migrate: ## Run database migrations
 	@echo "🗄️  Running database migrations..."
 	@if [ -f scripts/migrations/001_initial_schema.sql ]; then \
 		echo "📋 Migration files found"; \
-		echo "💡 For SQLite, migrations are handled automatically"; \
+		echo "💡 For PostgreSQL, run migrations manually"; \
 	else \
 		echo "⚠️  No migration files found"; \
 	fi

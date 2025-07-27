@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"ai-service/internal/model"
+	"ai-service/internal/util/exception"
 )
 
 // GenerationRepository defines the interface for generation data access
@@ -39,19 +39,15 @@ func NewGenerationRepository(db *sql.DB) GenerationRepository {
 func (r *generationRepository) Create(ctx context.Context, generation *model.GenerationHistory) error {
 	query := `
 		INSERT INTO generations (
-			id, provider, model, prompt, response, tokens_used, duration_ms, status, error_message
+			provider, model, prompt, response, tokens_used, duration_ms, status, error_message
 		) VALUES (
-			?, ?, ?, ?, ?, ?, ?, ?, ?
-		)
+			$1, $2, $3, $4, $5, $6, $7, $8
+		) RETURNING id, created_at, updated_at
 	`
 
-	// Generate UUID for SQLite
-	if generation.ID == "" {
-		generation.ID = fmt.Sprintf("gen-%d", time.Now().UnixNano())
-	}
-
-	_, err := r.db.ExecContext(ctx, query,
-		generation.ID,
+	var id string
+	var createdAt, updatedAt time.Time
+	err := r.db.QueryRowContext(ctx, query,
 		generation.Provider,
 		generation.Model,
 		generation.Prompt,
@@ -60,22 +56,23 @@ func (r *generationRepository) Create(ctx context.Context, generation *model.Gen
 		generation.Duration,
 		generation.Status,
 		generation.ErrorMessage,
-	)
+	).Scan(&id, &createdAt, &updatedAt)
 
 	if err != nil {
-		return err
+		return exception.TranslateDatabaseError(ctx, err)
 	}
 
-	// Set timestamps
-	generation.CreatedAt = time.Now()
-	generation.UpdatedAt = time.Now()
+	// Set the generated values
+	generation.ID = id
+	generation.CreatedAt = createdAt
+	generation.UpdatedAt = updatedAt
 
 	return nil
 }
 
 // GetByID retrieves a generation by ID
 func (r *generationRepository) GetByID(ctx context.Context, id string) (*model.GenerationHistory, error) {
-	query := `SELECT id, provider, model, prompt, response, tokens_used, duration_ms, status, error_message, created_at, updated_at FROM generations WHERE id = ?`
+	query := `SELECT id, provider, model, prompt, response, tokens_used, duration_ms, status, error_message, created_at, updated_at FROM generations WHERE id = $1`
 
 	var generation model.GenerationHistory
 	var errorMessage sql.NullString
@@ -94,7 +91,7 @@ func (r *generationRepository) GetByID(ctx context.Context, id string) (*model.G
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, exception.TranslateDatabaseError(ctx, err)
 	}
 
 	if errorMessage.Valid {
@@ -108,14 +105,14 @@ func (r *generationRepository) GetByID(ctx context.Context, id string) (*model.G
 func (r *generationRepository) GetByProvider(ctx context.Context, provider string, limit, offset int) ([]*model.GenerationHistory, error) {
 	query := `
 		SELECT id, provider, model, prompt, response, tokens_used, duration_ms, status, error_message, created_at, updated_at FROM generations 
-		WHERE provider = ? 
+		WHERE provider = $1 
 		ORDER BY created_at DESC 
-		LIMIT ? OFFSET ?
+		LIMIT $2 OFFSET $3
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, provider, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, exception.TranslateDatabaseError(ctx, err)
 	}
 	defer rows.Close()
 
@@ -137,7 +134,7 @@ func (r *generationRepository) GetByProvider(ctx context.Context, provider strin
 			&generation.UpdatedAt,
 		)
 		if err != nil {
-			return nil, err
+			return nil, exception.TranslateDatabaseError(ctx, err)
 		}
 		if errorMessage.Valid {
 			generation.ErrorMessage = errorMessage.String
@@ -153,12 +150,12 @@ func (r *generationRepository) GetRecent(ctx context.Context, limit, offset int)
 	query := `
 		SELECT id, provider, model, prompt, response, tokens_used, duration_ms, status, error_message, created_at, updated_at FROM generations 
 		ORDER BY created_at DESC 
-		LIMIT ? OFFSET ?
+		LIMIT $1 OFFSET $2
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, exception.TranslateDatabaseError(ctx, err)
 	}
 	defer rows.Close()
 
@@ -180,7 +177,7 @@ func (r *generationRepository) GetRecent(ctx context.Context, limit, offset int)
 			&generation.UpdatedAt,
 		)
 		if err != nil {
-			return nil, err
+			return nil, exception.TranslateDatabaseError(ctx, err)
 		}
 		if errorMessage.Valid {
 			generation.ErrorMessage = errorMessage.String
@@ -195,14 +192,14 @@ func (r *generationRepository) GetRecent(ctx context.Context, limit, offset int)
 func (r *generationRepository) GetByStatus(ctx context.Context, status string, limit, offset int) ([]*model.GenerationHistory, error) {
 	query := `
 		SELECT id, provider, model, prompt, response, tokens_used, duration_ms, status, error_message, created_at, updated_at FROM generations 
-		WHERE status = ? 
+		WHERE status = $1 
 		ORDER BY created_at DESC 
-		LIMIT ? OFFSET ?
+		LIMIT $2 OFFSET $3
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, status, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, exception.TranslateDatabaseError(ctx, err)
 	}
 	defer rows.Close()
 
@@ -224,7 +221,7 @@ func (r *generationRepository) GetByStatus(ctx context.Context, status string, l
 			&generation.UpdatedAt,
 		)
 		if err != nil {
-			return nil, err
+			return nil, exception.TranslateDatabaseError(ctx, err)
 		}
 		if errorMessage.Valid {
 			generation.ErrorMessage = errorMessage.String
@@ -245,14 +242,14 @@ func (r *generationRepository) GetStats(ctx context.Context, startDate, endDate 
 			AVG(duration_ms) as avg_duration_ms,
 			COUNT(CASE WHEN status = 'error' THEN 1 END) as error_count
 		FROM generations 
-		WHERE created_at >= ? AND created_at <= ?
+		WHERE created_at >= $1 AND created_at <= $2
 		GROUP BY provider
 		ORDER BY total_generations DESC
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, startDate, endDate)
 	if err != nil {
-		return nil, err
+		return nil, exception.TranslateDatabaseError(ctx, err)
 	}
 	defer rows.Close()
 
@@ -267,7 +264,7 @@ func (r *generationRepository) GetStats(ctx context.Context, startDate, endDate 
 			&stat.ErrorCount,
 		)
 		if err != nil {
-			return nil, err
+			return nil, exception.TranslateDatabaseError(ctx, err)
 		}
 		stats = append(stats, &stat)
 	}
@@ -284,7 +281,7 @@ func (r *generationRepository) GetProviderStats(ctx context.Context, provider st
 			AVG(duration_ms) as avg_duration_ms,
 			COUNT(CASE WHEN status = 'error' THEN 1 END) as error_count
 		FROM generations 
-		WHERE provider = ? AND created_at >= ? AND created_at <= ?
+		WHERE provider = $1 AND created_at >= $2 AND created_at <= $3
 	`
 
 	var stat model.ProviderStats
@@ -298,7 +295,7 @@ func (r *generationRepository) GetProviderStats(ctx context.Context, provider st
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, exception.TranslateDatabaseError(ctx, err)
 	}
 
 	return &stat, nil
@@ -308,17 +305,17 @@ func (r *generationRepository) GetProviderStats(ctx context.Context, provider st
 func (r *generationRepository) UpdateStatus(ctx context.Context, id string, status string, errorMessage string) error {
 	query := `
 		UPDATE generations 
-		SET status = ?, error_message = ?, updated_at = ?
-		WHERE id = ?
+		SET status = $1, error_message = $2, updated_at = NOW()
+		WHERE id = $3
 	`
 
-	_, err := r.db.ExecContext(ctx, query, status, errorMessage, time.Now(), id)
-	return err
+	_, err := r.db.ExecContext(ctx, query, status, errorMessage, id)
+	return exception.TranslateDatabaseError(ctx, err)
 }
 
 // Delete removes a generation record
 func (r *generationRepository) Delete(ctx context.Context, id string) error {
-	query := `DELETE FROM generations WHERE id = ?`
+	query := `DELETE FROM generations WHERE id = $1`
 	_, err := r.db.ExecContext(ctx, query, id)
-	return err
+	return exception.TranslateDatabaseError(ctx, err)
 }

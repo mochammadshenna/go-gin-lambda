@@ -120,12 +120,12 @@ func Load() (*Config, error) {
 			Environment:  getEnv("ENVIRONMENT", "development"),
 		},
 		Database: DatabaseConfig{
-			Driver:   getEnv("DB_DRIVER", "sqlite"),
+			Driver:   getEnv("DB_DRIVER", "postgres"),
 			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnv("DB_PORT", "3306"),
-			Username: getEnv("DB_USERNAME", ""),
+			Port:     getEnv("DB_PORT", "5432"),
+			Username: getEnv("DB_USERNAME", "postgres"),
 			Password: getEnv("DB_PASSWORD", ""),
-			Name:     getEnv("DB_NAME", "./ai_service.db"),
+			Name:     getEnv("DB_NAME", "ai_service"),
 			SSLMode:  getEnv("DB_SSL_MODE", "disable"),
 		},
 		AIProviders: AIProvidersConfig{
@@ -183,11 +183,13 @@ func (c *Config) Validate() error {
 		return fmt.Errorf("database driver is required")
 	}
 
-	// Validate at least one AI provider is configured
-	if c.AIProviders.OpenAI.APIKey == "" &&
-		c.AIProviders.Gemini.APIKey == "" &&
-		c.AIProviders.Anthropic.APIKey == "" {
-		return fmt.Errorf("at least one AI provider API key is required")
+	// Validate at least one AI provider is configured (only in production)
+	if c.IsProduction() {
+		if c.AIProviders.OpenAI.APIKey == "" &&
+			c.AIProviders.Gemini.APIKey == "" &&
+			c.AIProviders.Anthropic.APIKey == "" {
+			return fmt.Errorf("at least one AI provider API key is required in production")
+		}
 	}
 
 	return nil
