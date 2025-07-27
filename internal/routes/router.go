@@ -4,14 +4,15 @@ import (
 	"ai-service/internal/app/middleware"
 	"ai-service/internal/controller"
 	"ai-service/internal/outbound"
+	"ai-service/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouters(aiManager *outbound.Manager) *gin.Engine {
-	// Initialize controllers with AI manager
-	aiController := controller.NewAIController(aiManager)
-	webController := controller.NewWebController(nil)
+func NewRouters(aiManager *outbound.Manager, generationRepo repository.GenerationRepository) *gin.Engine {
+	// Initialize controllers with AI manager and repository
+	aiController := controller.NewAIController(aiManager, generationRepo)
+	webController := controller.NewWebController(generationRepo)
 	healthController := controller.NewHealthController()
 
 	router := router(

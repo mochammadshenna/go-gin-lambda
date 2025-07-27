@@ -162,31 +162,62 @@ flowchart LR
 
 ### Prerequisites
 
-- Go 1.23+
-- PostgreSQL 14+
-- Redis (optional, for caching)
-- Docker & Docker Compose (for local development)
+- Go 1.21 or higher
+- SQLite3 (for development) or PostgreSQL (for production)
+- [sqlc](https://sqlc.dev/) - SQL compiler for Go
+
+### Installing sqlc
+
+The `sqlc` binary is not included in this repository due to its large size (52MB). You can download it from the official website:
+
+```bash
+# For macOS (Intel)
+curl -L https://github.com/sqlc-dev/sqlc/releases/download/v1.25.0/sqlc_1.25.0_darwin_amd64.tar.gz | tar -xz sqlc
+
+# For macOS (Apple Silicon)
+curl -L https://github.com/sqlc-dev/sqlc/releases/download/v1.25.0/sqlc_1.25.0_darwin_arm64.tar.gz | tar -xz sqlc
+
+# For Linux
+curl -L https://github.com/sqlc-dev/sqlc/releases/download/v1.25.0/sqlc_1.25.0_linux_amd64.tar.gz | tar -xz sqlc
+
+# Make it executable
+chmod +x sqlc
+```
+
+Alternatively, you can install it via package managers:
+
+```bash
+# Using Homebrew (macOS)
+brew install sqlc
+
+# Using Go install
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+```
 
 ### Environment Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd ai-service
    ```
 
 2. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 3. **Install dependencies**
+
    ```bash
    go mod tidy
    ```
 
 4. **Set up database**
+
    ```bash
    # Using Docker Compose
    docker-compose up -d postgres
@@ -198,14 +229,16 @@ flowchart LR
    ```
 
 5. **Run the application**
+
    ```bash
    go run cmd/main/main.go
    ```
 
 The service will be available at:
-- **Web UI**: http://localhost:8080
-- **API**: http://localhost:8080/api
-- **Health Check**: http://localhost:8080/api/health
+
+- **Web UI**: <http://localhost:8080>
+- **API**: <http://localhost:8080/api>
+- **Health Check**: <http://localhost:8080/api/health>
 
 ## 🗄️ Database Setup
 
@@ -377,18 +410,21 @@ scrape_configs:
 #### Grafana Dashboards
 
 **System Overview Dashboard**
+
 - Request rate and response times
 - Error rates by endpoint
 - Database connection pool status
 - Memory and CPU usage
 
 **AI Service Dashboard**
+
 - Provider performance comparison
 - Token usage and costs
 - Generation success/failure rates
 - Response time percentiles
 
 **Database Performance Dashboard**
+
 - Query execution times
 - Connection pool utilization
 - Slow query analysis
@@ -662,7 +698,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: [Wiki](link-to-wiki)
 - **Issues**: [GitHub Issues](link-to-issues)
 - **Discussions**: [GitHub Discussions](link-to-discussions)
-- **Email**: support@ai-service.com
+- **Email**: <support@ai-service.com>
 
 ---
 

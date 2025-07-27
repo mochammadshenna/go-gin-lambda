@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"ai-service/internal/repository"
 	"ai-service/internal/util/template"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,11 +18,13 @@ type WebController interface {
 }
 
 type webController struct {
-	// service will be injected
+	generationRepo repository.GenerationRepository
 }
 
-func NewWebController(service interface{}) WebController {
-	return &webController{}
+func NewWebController(generationRepo repository.GenerationRepository) WebController {
+	return &webController{
+		generationRepo: generationRepo,
+	}
 }
 
 // Home renders the home page with AI generation interface
@@ -83,21 +87,15 @@ func (c *webController) Home(ctx *gin.Context) {
 
 // History renders the history page with generation records
 func (c *webController) History(ctx *gin.Context) {
+	generations, err := c.generationRepo.GetRecent(ctx, 50, 0) // Get last 50 generations
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, "Failed to load generation history: "+err.Error())
+		return
+	}
+
 	data := gin.H{
-		"Title": "Generation History",
-		"Generations": []gin.H{
-			{
-				"ID":         "gen-123",
-				"Provider":   "OpenAI",
-				"Model":      "gpt-3.5-turbo",
-				"Prompt":     "Write a hello world program",
-				"Response":   "Here's a simple hello world program...",
-				"TokensUsed": 150,
-				"Duration":   "2.5s",
-				"CreatedAt":  "2024-01-15 10:30:00",
-				"Status":     "success",
-			},
-		},
+		"Title":       "Generation History",
+		"Generations": generations,
 	}
 
 	html, err := template.ExecuteTemplate("history_standalone.html", data)
@@ -112,36 +110,50 @@ func (c *webController) History(ctx *gin.Context) {
 
 // Stats renders the statistics page with usage metrics
 func (c *webController) Stats(ctx *gin.Context) {
+	// Get stats for the last 30 days
+	endDate := time.Now()
+	startDate := endDate.AddDate(0, 0, -30)
+
+	providerStats, err := c.generationRepo.GetStats(ctx, startDate, endDate)
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, "Failed to load usage statistics: "+err.Error())
+		return
+	}
+
+	// Calculate totals
+	var totalGenerations, totalTokens int
+	providerStatsMap := make(map[string]gin.H)
+
+	for _, stat := range providerStats {
+		totalGenerations += stat.TotalGenerations
+		totalTokens += stat.TotalTokens
+		providerStatsMap[stat.Provider] = gin.H{
+			"Count":  stat.TotalGenerations,
+			"Tokens": stat.TotalTokens,
+		}
+	}
+
+	// Format data for template
+	statsData := gin.H{
+		"TotalGenerations":           totalGenerations,
+		"TotalTokensUsed":            totalTokens,
+		"AverageDuration":            0, // TODO: Calculate from actual data
+		"DaysActive":                 30,
+		"ProviderStats":              providerStatsMap,
+		"RecentActivity":             []gin.H{}, // TODO: Add recent activity
+		"SuccessRate":                100,       // TODO: Calculate from actual data
+		"AverageTokensPerGeneration": 0,         // TODO: Calculate from actual data
+		"MostUsedProvider":           "N/A",     // TODO: Calculate from actual data
+	}
+
 	data := gin.H{
 		"Title": "Usage Statistics",
-		"Stats": map[string]gin.H{
-			"openai": {
-				"TotalGenerations": 150,
-				"TotalTokens":      45000,
-				"AvgDuration":      2.5,
-				"ErrorCount":       3,
-			},
-			"gemini": {
-				"TotalGenerations": 75,
-				"TotalTokens":      25000,
-				"AvgDuration":      1.8,
-				"ErrorCount":       1,
-			},
-			"anthropic": {
-				"TotalGenerations": 25,
-				"TotalTokens":      8000,
-				"AvgDuration":      3.2,
-				"ErrorCount":       0,
-			},
-		},
+		"Stats": statsData,
 	}
 
 	html, err := template.ExecuteTemplate("stats_standalone.html", data)
 	if err != nil {
-		ctx.HTML(http.StatusInternalServerError, "error.html", gin.H{
-			"Title":   "Error",
-			"Message": "Failed to load statistics page",
-		})
+		ctx.String(http.StatusInternalServerError, "Failed to load statistics page: "+err.Error())
 		return
 	}
 

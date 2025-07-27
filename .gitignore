@@ -116,3 +116,6 @@ package-lock.json
 # Configuration files with sensitive data
 config/local.yaml
 config/production.yaml 
+
+# Large binary files
+sqlc 

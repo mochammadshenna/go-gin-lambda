@@ -2,8 +2,10 @@ package main
 
 import (
 	"ai-service/cmd/config"
+	"ai-service/internal/app/database"
 	"ai-service/internal/app/middleware"
 	"ai-service/internal/outbound"
+	"ai-service/internal/repository"
 	"ai-service/internal/routes"
 	"ai-service/internal/util/authentication"
 	"ai-service/internal/util/logger"
@@ -52,11 +54,17 @@ func main() {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
 
+	// Initialize database
+	db := database.NewDB()
+
+	// Initialize repositories
+	generationRepo := repository.NewGenerationRepository(db.DB)
+
 	// Initialize AI manager
 	aiManager := outbound.NewManager(cfg)
 
 	startBootTime := time.Now()
-	router := routes.NewRouters(aiManager)
+	router := routes.NewRouters(aiManager, generationRepo)
 
 	if env == "prod" {
 		fmt.Println("running production mode")

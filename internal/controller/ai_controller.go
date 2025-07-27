@@ -3,6 +3,8 @@ package controller
 import (
 	"ai-service/internal/model"
 	"ai-service/internal/outbound"
+	"ai-service/internal/repository"
+	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -17,12 +19,14 @@ type AIController interface {
 }
 
 type aiController struct {
-	aiManager *outbound.Manager
+	aiManager      *outbound.Manager
+	generationRepo repository.GenerationRepository
 }
 
-func NewAIController(aiManager *outbound.Manager) AIController {
+func NewAIController(aiManager *outbound.Manager, generationRepo repository.GenerationRepository) AIController {
 	return &aiController{
-		aiManager: aiManager,
+		aiManager:      aiManager,
+		generationRepo: generationRepo,
 	}
 }
 
@@ -76,6 +80,24 @@ func (c *aiController) GenerateContent(ctx *gin.Context) {
 		return
 	}
 	duration := time.Since(startTime)
+
+	// Save generation record to database
+	generationRecord := &model.GenerationHistory{
+		Provider:     string(response.Provider),
+		Model:        response.Model,
+		Prompt:       genReq.Prompt,
+		Response:     response.Content,
+		TokensUsed:   response.TokensUsed,
+		Duration:     int64(duration.Milliseconds()),
+		Status:       "success",
+		ErrorMessage: "",
+	}
+
+	err = c.generationRepo.Create(ctx, generationRecord)
+	if err != nil {
+		// Log the error but don't fail the request
+		log.Printf("Failed to save generation record: %v", err)
+	}
 
 	// Return the response
 	ctx.JSON(200, gin.H{
