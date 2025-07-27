@@ -57,22 +57,30 @@ func main() {
 
 	// Initialize handlers
 	handler := handlers.New(aiManager, db, cfg)
+	webHandler := handlers.NewWebHandler(aiManager, db, cfg)
 
 	// Setup Gin router
 	if cfg.GinMode == "release" {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	
+
 	router := gin.New()
 
 	// Add middleware
 	router.Use(middleware.ErrorHandler())
 	router.Use(middleware.RequestLogger())
 	router.Use(middleware.CORS())
-	
+
 	// Add rate limiting
 	rateLimiter := middleware.NewRateLimiter(cfg.RateLimitRequestsPerMin)
 	router.Use(rateLimiter.Middleware())
+
+	// Web routes
+	router.GET("/test", webHandler.Test)
+	router.GET("/", webHandler.Home)
+	router.GET("/history", webHandler.History)
+	router.GET("/stats", webHandler.Stats)
+	router.GET("/error", webHandler.Error)
 
 	// API routes
 	v1 := router.Group("/api/v1")
@@ -80,40 +88,21 @@ func main() {
 		// AI Generation endpoints
 		v1.POST("/generate", handler.Generate)
 		v1.POST("/compare", handler.Compare)
-		
+
 		// Provider information
 		v1.GET("/providers", handler.GetProviders)
 		v1.GET("/commands", handler.GetCommands)
-		
+
 		// History and statistics
 		v1.GET("/history", handler.GetHistory)
 		v1.GET("/stats", handler.GetStats)
-		
+
 		// Health check
 		v1.GET("/health", handler.Health)
 	}
 
 	// Swagger documentation
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	
-	// Root endpoint
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"service": cfg.ServiceName,
-			"version": cfg.ServiceVersion,
-			"status":  "running",
-			"docs":    "/swagger/index.html",
-			"endpoints": map[string]string{
-				"generate":  "/api/v1/generate",
-				"compare":   "/api/v1/compare",
-				"providers": "/api/v1/providers",
-				"commands":  "/api/v1/commands",
-				"history":   "/api/v1/history",
-				"stats":     "/api/v1/stats",
-				"health":    "/api/v1/health",
-			},
-		})
-	})
 
 	// Start server
 	log.Info().
