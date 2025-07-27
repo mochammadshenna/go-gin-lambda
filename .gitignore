@@ -1,0 +1,118 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+ai-service
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Build artifacts
+build/
+dist/
+
+# Coverage reports
+coverage/
+*.coverage
+
+# SQLC generated files (if not using git submodules)
+internal/repository/generated/
+
+# Docker
+.dockerignore
+
+# Kubernetes
+*.kubeconfig
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Sentry
+.sentryclirc
+
+# Grafana
+grafana/data/
+
+# Prometheus
+prometheus/data/
+
+# PostgreSQL
+postgres-data/
+
+# Redis
+redis-data/
+
+# Node modules (if using any frontend tools)
+node_modules/
+
+# Yarn
+.yarn-integrity
+
+# npm
+package-lock.json
+
+# Backup files
+*.bak
+*.backup
+
+# Archive files
+*.tar.gz
+*.zip
+
+# Certificate files
+*.pem
+*.key
+*.crt
+
+# Configuration files with sensitive data
+config/local.yaml
+config/production.yaml 

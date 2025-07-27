@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=ai_service_user
+      - DB_PASSWORD=ai_service_password
+      - DB_NAME=ai_service
+      - DB_SSLMODE=disable
+      - PORT=8080
+      # Add your API keys here or use .env file
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    networks:
+      - ai-service-network
+
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_DB=ai_service
+      - POSTGRES_USER=ai_service_user
+      - POSTGRES_PASSWORD=ai_service_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - ai-service-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai-service-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  ai-service-network:
+    driver: bridge 
