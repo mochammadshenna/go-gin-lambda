@@ -828,6 +828,174 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--gray-400);
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-2xl);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid var(--border);
+            transform: scale(0.9) translateY(20px);
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: var(--space-sm);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .modal-content {
+            margin-bottom: var(--space-xl);
+        }
+
+        .modal-message {
+            color: var(--gray-700);
+            line-height: 1.6;
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-details {
+            background: var(--gray-50);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: flex-end;
+        }
+
+        .btn-modal {
+            padding: var(--space-md) var(--space-lg);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            min-width: 100px;
+        }
+
+        .btn-modal-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-modal-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--border);
+        }
+
+        .btn-modal-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .error-icon {
+            color: var(--error);
+        }
+
+        .warning-icon {
+            color: var(--warning);
+        }
+
+        .info-icon {
+            color: var(--primary);
+        }
+
+        /* Validation error styles */
+        .form-control.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: var(--space-xs);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
     </style>
 </head>
 
@@ -877,7 +1045,10 @@
                     <div class="provider-cards" id="providerCards">
                         <div class="provider-card" data-provider="openai">
                             <div class="provider-icon" style="color: #10a37f;">
-                                <i class="fas fa-robot"></i>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142-.0852 4.783-2.7582a.7712.7712 0 0 0 .7806 0l5.8428 3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                                </svg>
                             </div>
                             <div class="provider-info">
                                 <div class="provider-name">OpenAI</div>
@@ -889,6 +1060,8 @@
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                    <path
+                                        d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" />
                                 </svg>
                             </div>
                             <div class="provider-info">
@@ -898,7 +1071,10 @@
                         </div>
                         <div class="provider-card" data-provider="anthropic">
                             <div class="provider-icon" style="color: #d97706;">
-                                <i class="fas fa-shield-alt"></i>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+                                </svg>
                             </div>
                             <div class="provider-info">
                                 <div class="provider-name">Anthropic Claude</div>
@@ -944,7 +1120,7 @@
             <div class="main-content">
                 <div class="content-header">
                     <h2 class="content-title">Start Your Conversation</h2>
-                    <p class="content-subtitle">Tell Tanya what you'd like to create or discuss</p>
+                    <p class="content-subtitle">Tell TanyAI what you'd like to create or discuss</p>
                 </div>
 
                 <form id="generationForm">
@@ -1018,9 +1194,34 @@
         </div>
     </main>
 
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">
+                    <i class="fas fa-exclamation-triangle error-icon" id="modalIcon"></i>
+                    <span id="modalTitleText">Error</span>
+                </h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <p class="modal-message" id="modalMessage">An error occurred while processing your request.</p>
+                <div class="modal-details" id="modalDetails" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-modal-secondary" id="modalCancel">Cancel</button>
+                <button class="btn-modal btn-modal-primary" id="modalConfirm">OK</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden data elements for JavaScript -->
     <div id="provider-models-data" data-json='{{.ProviderModelsJSON | safe}}' style="display: none;"></div>
     <div id="provider-data" data-json='{{.ProvidersJSON | safe}}' style="display: none;"></div>
+
+
 
     <script>
         // Initialize data
@@ -1077,6 +1278,7 @@
                 this.classList.add('selected');
 
                 const provider = this.dataset.provider;
+                console.log('Provider selected:', provider);
                 updateModels(provider);
             });
         });
@@ -1087,12 +1289,27 @@
             modelSelect.innerHTML = '<option value="">Select Model</option>';
 
             if (provider && providerModels[provider]) {
+                console.log('Loading models for provider:', provider, providerModels[provider]);
                 providerModels[provider].forEach(model => {
                     const option = document.createElement('option');
                     option.value = model;
                     option.textContent = model;
                     modelSelect.appendChild(option);
                 });
+
+                // Auto-select the first model for better UX
+                if (providerModels[provider].length > 0) {
+                    modelSelect.value = providerModels[provider][0];
+                    console.log('Auto-selected model:', providerModels[provider][0]);
+
+                    // Add visual feedback that model was auto-selected
+                    modelSelect.style.borderColor = 'var(--success)';
+                    setTimeout(() => {
+                        modelSelect.style.borderColor = '';
+                    }, 2000);
+                }
+            } else {
+                console.warn('No models found for provider:', provider);
             }
         }
 
@@ -1112,25 +1329,148 @@
             }
         });
 
+        // Modal functionality
+        function showModal(title, message, details = null, type = 'error') {
+            const modal = document.getElementById('errorModal');
+            const modalTitle = document.getElementById('modalTitleText');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalDetails = document.getElementById('modalDetails');
+            const modalIcon = document.getElementById('modalIcon');
+
+            // Set icon based on type
+            modalIcon.className = 'fas';
+            if (type === 'error') {
+                modalIcon.classList.add('fa-exclamation-triangle', 'error-icon');
+            } else if (type === 'warning') {
+                modalIcon.classList.add('fa-exclamation-circle', 'warning-icon');
+            } else {
+                modalIcon.classList.add('fa-info-circle', 'info-icon');
+            }
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+
+            if (details) {
+                modalDetails.textContent = details;
+                modalDetails.style.display = 'block';
+            } else {
+                modalDetails.style.display = 'none';
+            }
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function hideModal() {
+            const modal = document.getElementById('errorModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // Modal event listeners
+        document.getElementById('modalClose').addEventListener('click', hideModal);
+        document.getElementById('modalCancel').addEventListener('click', hideModal);
+        document.getElementById('modalConfirm').addEventListener('click', hideModal);
+
+        // Close modal when clicking outside
+        document.getElementById('errorModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                hideModal();
+            }
+        });
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                hideModal();
+            }
+        });
+
+        // Form validation
+        function validateForm() {
+            const selectedProvider = document.querySelector('.provider-card.selected');
+            const model = document.getElementById('model').value;
+            const prompt = document.getElementById('prompt').value.trim();
+
+            console.log('=== FORM VALIDATION DEBUG ===');
+            console.log('Selected provider:', selectedProvider ? selectedProvider.dataset.provider : 'none');
+            console.log('Model value:', model);
+            console.log('Prompt value:', prompt);
+            console.log('================================');
+
+            // Clear previous error states
+            document.querySelectorAll('.form-control').forEach(control => {
+                control.classList.remove('error');
+            });
+
+            const errors = [];
+
+            if (!selectedProvider) {
+                errors.push('Please select an AI provider');
+            }
+
+            if (!model) {
+                document.getElementById('model').classList.add('error');
+                errors.push('Please select a model');
+            }
+
+            if (!prompt) {
+                document.getElementById('prompt').classList.add('error');
+                errors.push('Please enter your message');
+            }
+
+            console.log('Validation errors:', errors);
+            return errors;
+        }
+
         // Form submission
         document.getElementById('generationForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const selectedProvider = document.querySelector('.provider-card.selected');
-            if (!selectedProvider) {
-                alert('Please select an AI provider');
+            // Validate form
+            const errors = validateForm();
+            if (errors.length > 0) {
+                showModal(
+                    'Validation Error',
+                    'Please fix the following issues:',
+                    '• ' + errors.join('\n• '),
+                    'warning'
+                );
                 return;
             }
 
+            const selectedProvider = document.querySelector('.provider-card.selected');
             const formData = new FormData(this);
+            let modelValue = formData.get('model');
+
+            // Fallback: if no model is selected, auto-select the first available model for the provider
+            if (!modelValue && providerModels[selectedProvider.dataset.provider] && providerModels[selectedProvider.dataset.provider].length > 0) {
+                modelValue = providerModels[selectedProvider.dataset.provider][0];
+                console.log('Auto-selecting fallback model:', modelValue);
+            }
+
             const data = {
                 provider: selectedProvider.dataset.provider,
-                model: formData.get('model'),
-                prompt: formData.get('prompt'),
-                systemMsg: formData.get('systemMsg'),
-                temperature: parseFloat(formData.get('temperature')),
-                maxTokens: parseInt(formData.get('maxTokens'))
+                model: modelValue,
+                prompt: formData.get('prompt').trim(),
+                systemMsg: formData.get('systemMsg') || '',
+                temperature: parseFloat(formData.get('temperature')) || 0.7,
+                maxTokens: parseInt(formData.get('maxTokens')) || 1000
             };
+
+            // Debug: Log the data being sent
+            console.log('=== FORM SUBMISSION DEBUG ===');
+            console.log('Form data being sent:', JSON.stringify(data, null, 2));
+            console.log('Selected provider:', selectedProvider.dataset.provider);
+            console.log('Original model value:', formData.get('model'));
+            console.log('Final model value:', modelValue);
+            console.log('Prompt value:', formData.get('prompt'));
+            console.log('System message:', formData.get('systemMsg'));
+            console.log('Temperature:', formData.get('temperature'));
+            console.log('Max tokens:', formData.get('maxTokens'));
+            console.log('Provider models available:', providerModels);
+            console.log('Current provider models:', providerModels[selectedProvider.dataset.provider]);
+            console.log('================================');
 
             // Show loading
             document.getElementById('loading').style.display = 'flex';
@@ -1142,13 +1482,18 @@
             btn.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div> Thinking...';
 
             try {
+                console.log('Sending request to /api/generate...');
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
                 const result = await response.json();
+                console.log('Response data:', result);
 
                 if (response.ok) {
                     // Update result
@@ -1169,11 +1514,27 @@
                         resultSection.style.transform = 'translateY(0)';
                     }, 100);
                 } else {
-                    alert(`Error: ${result.error || 'Failed to generate content'}`);
+                    console.error('API Error:', result);
+                    const errorMessage = result.error || 'Failed to generate content';
+                    const errorDetails = result.details ? `Details: ${result.details}` : null;
+
+                    showModal(
+                        'Generation Failed',
+                        errorMessage,
+                        errorDetails,
+                        'error'
+                    );
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to connect to the server');
+                console.error('Fetch Error:', error);
+                console.error('Error details:', error.message);
+
+                showModal(
+                    'Connection Error',
+                    'Failed to connect to the server. Please check your internet connection and try again.',
+                    `Error: ${error.message}`,
+                    'error'
+                );
             } finally {
                 // Hide loading and restore button
                 document.getElementById('loading').style.display = 'none';
@@ -1192,6 +1553,11 @@
             document.getElementById('model').innerHTML = '<option value="">Select Model</option>';
             document.getElementById('tempValue').textContent = '0.7';
             document.getElementById('tempValue').style.background = 'var(--gradient-primary)';
+
+            // Clear error states
+            document.querySelectorAll('.form-control').forEach(control => {
+                control.classList.remove('error');
+            });
         });
 
         // Copy result
@@ -1212,14 +1578,21 @@
 
         // Auto-select first provider and focus on prompt
         document.addEventListener('DOMContentLoaded', function () {
-            document.querySelector('.provider-card').classList.add('selected');
-            updateModels('openai');
+            const firstProvider = document.querySelector('.provider-card');
+            if (firstProvider) {
+                firstProvider.classList.add('selected');
+                const provider = firstProvider.dataset.provider;
+                console.log('Auto-selecting first provider:', provider);
+                updateModels(provider);
+            }
 
             // Focus on the prompt textarea for immediate user input
             setTimeout(() => {
                 document.getElementById('prompt').focus();
             }, 500);
         });
+
+
     </script>
 </body>
 

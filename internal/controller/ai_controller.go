@@ -6,6 +6,7 @@ import (
 	"ai-service/internal/repository"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -42,11 +43,23 @@ func (c *aiController) GenerateContent(ctx *gin.Context) {
 	}
 
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(400, gin.H{"error": "Invalid request data", "details": err.Error()})
+		// Provide more specific validation error messages
+		var errorMsg string
+		errStr := err.Error()
+		if strings.Contains(errStr, "Key: 'Provider'") && strings.Contains(errStr, "required") {
+			errorMsg = "Provider is required"
+		} else if strings.Contains(errStr, "Key: 'Model'") && strings.Contains(errStr, "required") {
+			errorMsg = "Model is required"
+		} else if strings.Contains(errStr, "Key: 'Prompt'") && strings.Contains(errStr, "required") {
+			errorMsg = "Prompt is required"
+		} else {
+			errorMsg = "Invalid request data"
+		}
+		ctx.JSON(400, gin.H{"error": errorMsg, "details": err.Error()})
 		return
 	}
 
-	// Convert provider string to AIProvider type
+	// Validate provider
 	var provider model.AIProvider
 	switch request.Provider {
 	case "openai":
@@ -56,8 +69,38 @@ func (c *aiController) GenerateContent(ctx *gin.Context) {
 	case "anthropic":
 		provider = model.Anthropic
 	default:
-		ctx.JSON(400, gin.H{"error": "Unsupported provider", "provider": request.Provider})
+		ctx.JSON(400, gin.H{
+			"error":    "Unsupported provider",
+			"details":  fmt.Sprintf("Provider '%s' is not supported. Supported providers: openai, gemini, anthropic", request.Provider),
+			"provider": request.Provider,
+		})
 		return
+	}
+
+	// Validate model for the selected provider
+	validModels := map[string][]string{
+		"openai":    {"gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"},
+		"gemini":    {"gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"},
+		"anthropic": {"claude-3-sonnet", "claude-3-opus", "claude-3-haiku"},
+	}
+
+	if models, exists := validModels[request.Provider]; exists {
+		modelValid := false
+		for _, validModel := range models {
+			if validModel == request.Model {
+				modelValid = true
+				break
+			}
+		}
+		if !modelValid {
+			ctx.JSON(400, gin.H{
+				"error":    "Invalid model for selected provider",
+				"details":  fmt.Sprintf("Model '%s' is not valid for provider '%s'. Valid models: %v", request.Model, request.Provider, models),
+				"provider": request.Provider,
+				"model":    request.Model,
+			})
+			return
+		}
 	}
 
 	// Create generation request
