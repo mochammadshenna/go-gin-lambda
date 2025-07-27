@@ -336,6 +336,35 @@
             background: var(--bg-card);
             transition: all var(--transition-normal);
             box-shadow: var(--shadow-sm);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right var(--space-md) center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: calc(var(--space-md) + 20px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Filter dropdown container with glass effect */
+        .filter-select::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .filter-select:hover::before {
+            opacity: 1;
         }
 
         .filter-select:focus {
@@ -343,10 +372,52 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), var(--shadow-md);
             transform: translateY(-1px);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%237c3aed' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
         }
 
         .filter-select:hover {
             border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a855f7' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        }
+
+        /* Option styling for filter dropdowns */
+        .filter-select option {
+            background: var(--bg-card);
+            color: var(--gray-900);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-select option:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Enhanced filter dropdown animations */
+        .filter-select:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Custom filter dropdown arrow animation */
+        .filter-select:focus {
+            animation: filterDropdownFocus 0.3s ease;
+        }
+
+        @keyframes filterDropdownFocus {
+            0% {
+                transform: translateY(-1px) scale(1);
+            }
+
+            50% {
+                transform: translateY(-2px) scale(1.02);
+            }
+
+            100% {
+                transform: translateY(-1px) scale(1);
+            }
         }
 
         .refresh-btn {
