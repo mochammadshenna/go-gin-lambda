@@ -158,7 +158,7 @@
         .nav {
             max-width: 1400px;
             margin: 0 auto;
-            padding: var(--space-lg) var(--space-xl);
+            padding: var(--space-md) var(--space-xl);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -169,7 +169,7 @@
             align-items: center;
             gap: var(--space-sm);
             font-weight: 800;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             color: var(--primary);
             text-decoration: none;
             transition: all var(--transition-normal);
@@ -180,7 +180,7 @@
         }
 
         .logo i {
-            font-size: 2.25rem;
+            font-size: 1.75rem;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -209,10 +209,10 @@
             color: var(--gray-600);
             text-decoration: none;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: all var(--transition-normal);
             position: relative;
-            padding: var(--space-sm) var(--space-md);
+            padding: var(--space-xs) var(--space-sm);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
@@ -280,26 +280,39 @@
             line-height: 1.7;
         }
 
-        /* Main Layout Grid */
-        .main-layout {
+        /* Unified Container */
+        .unified-container {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            animation: slideInUp 0.8s ease;
+            overflow: hidden;
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: var(--space-2xl);
             align-items: start;
         }
 
-        /* Left Sidebar - AI Provider & Settings */
-        .sidebar {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius-2xl);
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-xl);
-            position: sticky;
-            top: 120px;
-            animation: slideInLeft 0.8s ease;
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Left Side - Settings */
+        .left-side {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            padding: var(--space-2xl);
+            border-right: 1px solid var(--border-light);
         }
 
         @keyframes slideInLeft {
@@ -333,18 +346,18 @@
             color: var(--primary);
         }
 
-        /* Provider Cards - Smaller Size */
+        /* Provider Cards - Unified Layout */
         .provider-cards {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--space-md);
         }
 
         .provider-card {
             background: var(--bg-card);
             border: 2px solid var(--border);
-            border-radius: var(--radius-xl);
-            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
             cursor: pointer;
             transition: all var(--transition-normal);
             position: relative;
@@ -352,7 +365,7 @@
             box-shadow: var(--shadow-sm);
             display: flex;
             align-items: center;
-            gap: var(--space-md);
+            gap: var(--space-sm);
         }
 
         .provider-card::before {
@@ -384,13 +397,13 @@
         }
 
         .provider-icon {
-            font-size: 1.5rem;
-            width: 40px;
-            height: 40px;
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             background: var(--gray-100);
             transition: all var(--transition-normal);
         }
@@ -407,13 +420,13 @@
             font-weight: 600;
             margin-bottom: var(--space-xs);
             color: var(--gray-900);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .provider-desc {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gray-600);
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         /* Settings Section */
@@ -592,28 +605,10 @@
             border: 2px solid var(--white);
         }
 
-        /* Right Side - Main Content Area */
-        .main-content {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius-2xl);
+        /* Right Side - AI Input & Results */
+        .right-side {
             padding: var(--space-2xl);
-            box-shadow: var(--shadow-xl);
-            animation: slideInRight 0.8s ease 0.2s both;
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            background: var(--bg-card);
         }
 
         .content-header {
@@ -658,11 +653,11 @@
         }
 
         .btn {
-            padding: var(--space-lg) var(--space-2xl);
+            padding: var(--space-md) var(--space-xl);
             border: none;
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all var(--transition-normal);
             text-decoration: none;
@@ -671,7 +666,7 @@
             gap: var(--space-sm);
             position: relative;
             overflow: hidden;
-            min-width: 160px;
+            min-width: 120px;
             justify-content: center;
         }
 
@@ -825,18 +820,9 @@
 
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .main-layout {
+            .unified-container {
                 grid-template-columns: 1fr;
                 gap: var(--space-xl);
-            }
-
-            .sidebar {
-                position: static;
-                order: 2;
-            }
-
-            .main-content {
-                order: 1;
             }
         }
 
@@ -1129,10 +1115,10 @@
             <p>Your intelligent AI assistant for creative content generation</p>
         </section>
 
-        <!-- Main Layout -->
-        <div class="main-layout">
-            <!-- Left Sidebar - AI Provider & Settings -->
-            <aside class="sidebar">
+        <!-- Unified Main Content -->
+        <div class="unified-container">
+            <!-- Left Side - Settings -->
+            <div class="left-side">
                 <!-- AI Provider Section -->
                 <div class="provider-section">
                     <h3 class="section-title">
@@ -1142,9 +1128,10 @@
                     <div class="provider-cards" id="providerCards">
                         <div class="provider-card" data-provider="openai">
                             <div class="provider-icon" style="color: #10a37f;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    preserveAspectRatio="xMidYMid" viewBox="0 0 256 260">
                                     <path
-                                        d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142-.0852 4.783-2.7582a.7712.7712 0 0 0 .7806 0l5.8428 3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                                        d="M239.184 106.203a64.716 64.716 0 0 0-5.576-53.103C219.452 28.459 191 15.784 163.213 21.74A65.586 65.586 0 0 0 52.096 45.22a64.716 64.716 0 0 0-43.23 31.36c-14.31 24.602-11.061 55.634 8.033 76.74a64.665 64.665 0 0 0 5.525 53.102c14.174 24.65 42.644 37.324 70.446 31.36a64.72 64.72 0 0 0 48.754 21.744c28.481.025 53.714-18.361 62.414-45.481a64.767 64.767 0 0 0 43.229-31.36c14.137-24.558 10.875-55.423-8.083-76.483Zm-97.56 136.338a48.397 48.397 0 0 1-31.105-11.255l1.535-.87 51.67-29.825a8.595 8.595 0 0 0 4.247-7.367v-72.85l21.845 12.636c.218.111.37.32.409.563v60.367c-.056 26.818-21.783 48.545-48.601 48.601Zm-104.466-44.61a48.345 48.345 0 0 1-5.781-32.589l1.534.921 51.722 29.826a8.339 8.339 0 0 0 8.441 0l63.181-36.425v25.221a.87.87 0 0 1-.358.665l-52.335 30.184c-23.257 13.398-52.97 5.431-66.404-17.803ZM23.549 85.38a48.499 48.499 0 0 1 25.58-21.333v61.39a8.288 8.288 0 0 0 4.195 7.316l62.874 36.272-21.845 12.636a.819.819 0 0 1-.767 0L41.353 151.53c-23.211-13.454-31.171-43.144-17.804-66.405v.256Zm179.466 41.695-63.08-36.63L161.73 77.86a.819.819 0 0 1 .768 0l52.233 30.184a48.6 48.6 0 0 1-7.316 87.635v-61.391a8.544 8.544 0 0 0-4.4-7.213Zm21.742-32.69-1.535-.922-51.619-30.081a8.39 8.39 0 0 0-8.492 0L99.98 99.808V74.587a.716.716 0 0 1 .307-.665l52.233-30.133a48.652 48.652 0 0 1 72.236 50.391v.205ZM88.061 139.097l-21.845-12.585a.87.87 0 0 1-.41-.614V65.685a48.652 48.652 0 0 1 79.757-37.346l-1.535.87-51.67 29.825a8.595 8.595 0 0 0-4.246 7.367l-.051 72.697Zm11.868-25.58 28.138-16.217 28.188 16.218v32.434l-28.086 16.218-28.188-16.218-.052-32.434Z" />
                                 </svg>
                             </div>
                             <div class="provider-info">
@@ -1154,11 +1141,91 @@
                         </div>
                         <div class="provider-card" data-provider="gemini">
                             <div class="provider-icon" style="color: #4285f4;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                                    <path
-                                        d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    viewBox="0 0 296 298">
+                                    <mask id="gemini__a" width="296" height="298" x="0" y="0" maskUnits="userSpaceOnUse"
+                                        style="mask-type:alpha">
+                                        <path fill="#3186FF"
+                                            d="M141.201 4.886c2.282-6.17 11.042-6.071 13.184.148l5.985 17.37a184.004 184.004 0 0 0 111.257 113.049l19.304 6.997c6.143 2.227 6.156 10.91.02 13.155l-19.35 7.082a184.001 184.001 0 0 0-109.495 109.385l-7.573 20.629c-2.241 6.105-10.869 6.121-13.133.025l-7.908-21.296a184 184 0 0 0-109.02-108.658l-19.698-7.239c-6.102-2.243-6.118-10.867-.025-13.132l20.083-7.467A183.998 183.998 0 0 0 133.291 26.28l7.91-21.394Z" />
+                                    </mask>
+                                    <g mask="url(#gemini__a)">
+                                        <g filter="url(#gemini__b)">
+                                            <ellipse cx="163" cy="149" fill="#3689FF" rx="196" ry="159" />
+                                        </g>
+                                        <g filter="url(#gemini__c)">
+                                            <ellipse cx="33.5" cy="142.5" fill="#F6C013" rx="68.5" ry="72.5" />
+                                        </g>
+                                        <g filter="url(#gemini__d)">
+                                            <ellipse cx="19.5" cy="148.5" fill="#F6C013" rx="68.5" ry="72.5" />
+                                        </g>
+                                        <g filter="url(#gemini__e)">
+                                            <path fill="#FA4340"
+                                                d="M194 10.5C172 82.5 65.5 134.333 22.5 135L144-66l50 76.5Z" />
+                                        </g>
+                                        <g filter="url(#gemini__f)">
+                                            <path fill="#FA4340"
+                                                d="M190.5-12.5C168.5 59.5 62 111.333 19 112L140.5-89l50 76.5Z" />
+                                        </g>
+                                        <g filter="url(#gemini__g)">
+                                            <path fill="#14BB69"
+                                                d="M194.5 279.5C172.5 207.5 66 155.667 23 155l121.5 201 50-76.5Z" />
+                                        </g>
+                                        <g filter="url(#gemini__h)">
+                                            <path fill="#14BB69"
+                                                d="M196.5 320.5C174.5 248.5 68 196.667 25 196l121.5 201 50-76.5Z" />
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <filter id="gemini__b" width="464" height="390" x="-69" y="-46"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="18" />
+                                        </filter>
+                                        <filter id="gemini__c" width="265" height="273" x="-99" y="6"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="32" />
+                                        </filter>
+                                        <filter id="gemini__d" width="265" height="273" x="-113" y="12"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="32" />
+                                        </filter>
+                                        <filter id="gemini__e" width="299.5" height="329" x="-41.5" y="-130"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="32" />
+                                        </filter>
+                                        <filter id="gemini__f" width="299.5" height="329" x="-45" y="-153"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="32" />
+                                        </filter>
+                                        <filter id="gemini__g" width="299.5" height="329" x="-41" y="91"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="32" />
+                                        </filter>
+                                        <filter id="gemini__h" width="299.5" height="329" x="-39" y="132"
+                                            color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                            <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                            <feGaussianBlur result="effect1_foregroundBlur_69_17998"
+                                                stdDeviation="32" />
+                                        </filter>
+                                    </defs>
                                 </svg>
                             </div>
                             <div class="provider-info">
@@ -1168,9 +1235,11 @@
                         </div>
                         <div class="provider-card" data-provider="anthropic">
                             <div class="provider-icon" style="color: #d97706;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <svg fill="#000" fill-rule="evenodd" style="flex:none;line-height:1" viewBox="0 0 24 24"
+                                    width="24" height="24">
+                                    <title>Anthropic</title>
                                     <path
-                                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+                                        d="M13.827 3.52h3.603L24 20h-3.603l-6.57-16.48zm-7.258 0h3.767L16.906 20h-3.674l-1.343-3.461H5.017l-1.344 3.46H0L6.57 3.522zm4.132 9.959L8.453 7.687 6.205 13.48H10.7z" />
                                 </svg>
                             </div>
                             <div class="provider-info">
@@ -1211,32 +1280,22 @@
                             value="1000" required>
                     </div>
                 </div>
-            </aside>
+            </div>
 
-            <!-- Right Side - Main Content Area -->
-            <div class="main-content">
+            <!-- Right Side - AI Input & Results -->
+            <div class="right-side">
                 <div class="content-header">
                     <h2 class="content-title">Start Your Conversation</h2>
                     <p class="content-subtitle">Tell TanyAI what you'd like to create or discuss</p>
                 </div>
 
                 <form id="generationForm">
-                    <!-- System Message -->
-                    <div class="input-section">
-                        <div class="form-group">
-                            <label class="form-label">System Message (Optional)</label>
-                            <textarea class="form-control textarea" id="systemMsg" name="systemMsg"
-                                placeholder="Define TanyAI's role or behavior. For example: 'You are a helpful coding assistant' or 'You are a creative writing expert'"></textarea>
-                        </div>
-                    </div>
-
                     <!-- User Prompt -->
                     <div class="input-section">
                         <div class="form-group">
-                            <label class="form-label">Your Message</label>
+                            <!-- <label class="form-label">Your Message</label> -->
                             <textarea class="form-control textarea" id="prompt" name="prompt"
-                                placeholder="What would you like TanyAI to help you with? Be specific and detailed for better results..."
-                                required></textarea>
+                                placeholder="TanyAI anything" required></textarea>
                         </div>
                     </div>
 
@@ -1550,7 +1609,6 @@
                 provider: selectedProvider.dataset.provider,
                 model: modelValue,
                 prompt: formData.get('prompt').trim(),
-                systemMsg: formData.get('systemMsg') || '',
                 temperature: parseFloat(formData.get('temperature')) || 0.7,
                 maxTokens: parseInt(formData.get('maxTokens')) || 1000
             };
@@ -1562,7 +1620,6 @@
             console.log('Original model value:', formData.get('model'));
             console.log('Final model value:', modelValue);
             console.log('Prompt value:', formData.get('prompt'));
-            console.log('System message:', formData.get('systemMsg'));
             console.log('Temperature:', formData.get('temperature'));
             console.log('Max tokens:', formData.get('maxTokens'));
             console.log('Provider models available:', providerModels);

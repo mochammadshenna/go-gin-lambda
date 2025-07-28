@@ -249,7 +249,7 @@ The service will be available at:
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=
 DB_NAME=ai_service
 DB_SSLMODE=disable
 DB_MAX_OPEN=25
