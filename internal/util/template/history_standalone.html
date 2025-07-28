@@ -292,14 +292,16 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: var(--radius-2xl);
-            padding: var(--space-xl);
+            padding: var(--space-lg);
             margin-bottom: var(--space-2xl);
             box-shadow: var(--shadow-xl);
             display: flex;
-            gap: var(--space-lg);
-            align-items: center;
+            gap: var(--space-sm);
+            align-items: flex-start;
             flex-wrap: wrap;
             animation: slideInUp 0.8s ease 0.2s both;
+            position: relative;
+            z-index: 100;
         }
 
         @keyframes slideInUp {
@@ -314,10 +316,19 @@
             }
         }
 
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+            flex: 1;
+            align-items: start;
+        }
+
         .filter-group {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: var(--space-sm);
+            align-items: flex-start;
         }
 
         .filter-label {
@@ -336,88 +347,249 @@
             background: var(--bg-card);
             transition: all var(--transition-normal);
             box-shadow: var(--shadow-sm);
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right var(--space-md) center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-            padding-right: calc(var(--space-md) + 20px);
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-        }
-
-        /* Filter dropdown container with glass effect */
-        .filter-select::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity var(--transition-normal);
-        }
-
-        .filter-select:hover::before {
-            opacity: 1;
+            overflow: visible;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 200px;
         }
 
         .filter-select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), var(--shadow-md);
-            transform: translateY(-1px);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%237c3aed' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
 
         .filter-select:hover {
             border-color: var(--primary-light);
             box-shadow: var(--shadow-md);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a855f7' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
         }
 
-        /* Option styling for filter dropdowns */
-        .filter-select option {
+        /* Custom Dropdown Styling */
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+            z-index: 200;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            text-align: left;
             background: var(--bg-card);
-            color: var(--gray-900);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
             padding: var(--space-sm) var(--space-md);
             font-size: 0.9rem;
-            transition: all var(--transition-fast);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            max-width: 200px;
         }
 
-        .filter-select option:hover {
+        .dropdown-trigger:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .dropdown-trigger:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .dropdown-text {
+            color: var(--gray-700);
+        }
+
+        .dropdown-arrow {
+            color: var(--gray-400);
+            transition: transform var(--transition-fast);
+        }
+
+        .dropdown-trigger[aria-expanded="true"] .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+            margin-top: var(--space-xs);
+            min-width: 180px;
+            max-width: 220px;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--gray-700);
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item:hover {
             background: var(--primary);
             color: var(--white);
         }
 
-        /* Enhanced filter dropdown animations */
-        .filter-select:active {
+        .dropdown-item.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: var(--space-xs) 0;
+        }
+
+        /* Custom dropdown container */
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown menu styling */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            z-index: 50;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+        }
+
+        .dropdown-container:focus-within .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
             transform: translateY(0);
+        }
+
+        /* Dropdown items */
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            background: transparent;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dropdown-item:first-child {
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .dropdown-item:last-child {
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Dropdown divider */
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: var(--space-xs) 0;
+        }
+
+        /* Dropdown trigger styling */
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            text-align: left;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md) var(--space-lg);
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition-normal);
             box-shadow: var(--shadow-sm);
         }
 
-        /* Custom filter dropdown arrow animation */
-        .filter-select:focus {
-            animation: filterDropdownFocus 0.3s ease;
+        .dropdown-trigger:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
         }
 
-        @keyframes filterDropdownFocus {
-            0% {
-                transform: translateY(-1px) scale(1);
-            }
+        .dropdown-trigger:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
 
-            50% {
-                transform: translateY(-2px) scale(1.02);
-            }
+        .dropdown-text {
+            color: var(--gray-700);
+        }
 
-            100% {
-                transform: translateY(-1px) scale(1);
-            }
+        .dropdown-arrow {
+            color: var(--gray-400);
+            transition: transform var(--transition-normal);
+        }
+
+        .dropdown-container:focus-within .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Active dropdown item */
+        .dropdown-item.active {
+            background: var(--primary);
+            color: var(--white);
         }
 
         .refresh-btn {
@@ -462,6 +634,7 @@
             transition: all var(--transition-normal);
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
 
         .history-card:hover {
@@ -697,6 +870,11 @@
                 padding: var(--space-lg);
             }
 
+            .filter-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+
             .filter-group {
                 justify-content: space-between;
             }
@@ -816,22 +994,50 @@
 
         <!-- Filters -->
         <div class="filters">
-            <div class="filter-group">
-                <label class="filter-label">Provider:</label>
-                <select class="filter-select" id="providerFilter">
-                    <option value="">All Providers</option>
-                    <option value="openai">OpenAI</option>
-                    <option value="gemini">Google Gemini</option>
-                    <option value="anthropic">Anthropic Claude</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label">Status:</label>
-                <select class="filter-select" id="statusFilter">
-                    <option value="">All Status</option>
-                    <option value="success">Success</option>
-                    <option value="error">Error</option>
-                </select>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Provider:</label>
+                    <div class="dropdown-container">
+                        <button type="button" class="filter-select dropdown-trigger" id="providerDropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <span class="dropdown-text">All Providers</span>
+                            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu" id="providerDropdownMenu">
+                            <button type="button" class="dropdown-item" data-value="">All Providers</button>
+                            <div class="dropdown-divider"></div>
+                            <button type="button" class="dropdown-item" data-value="openai">OpenAI</button>
+                            <button type="button" class="dropdown-item" data-value="gemini">Google Gemini</button>
+                            <button type="button" class="dropdown-item" data-value="anthropic">Anthropic Claude</button>
+                        </div>
+                        <input type="hidden" id="providerFilter" value="">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status:</label>
+                    <div class="dropdown-container">
+                        <button type="button" class="filter-select dropdown-trigger" id="statusDropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <span class="dropdown-text">All Status</span>
+                            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu" id="statusDropdownMenu">
+                            <button type="button" class="dropdown-item" data-value="">All Status</button>
+                            <div class="dropdown-divider"></div>
+                            <button type="button" class="dropdown-item" data-value="success">Success</button>
+                            <button type="button" class="dropdown-item" data-value="error">Error</button>
+                        </div>
+                        <input type="hidden" id="statusFilter" value="">
+                    </div>
+                </div>
             </div>
             <button class="refresh-btn" id="refreshBtn">
                 <i class="fas fa-sync-alt"></i>
@@ -909,6 +1115,10 @@
             }
         });
 
+        // Initialize dropdowns
+        initDropdown('providerDropdown', 'providerFilter');
+        initDropdown('statusDropdown', 'statusFilter');
+
         // Filter functionality with enhanced animations
         document.getElementById('providerFilter').addEventListener('change', filterHistory);
         document.getElementById('statusFilter').addEventListener('change', filterHistory);
@@ -979,6 +1189,71 @@
 
             // Show enhanced alert (in real app, this would be a modal)
             alert('Enhanced details view coming soon! This will show full generation details, metadata, and allow for regeneration.');
+        }
+
+        // Initialize dropdown functionality
+        function initDropdown(dropdownId, hiddenInputId) {
+            const dropdown = document.getElementById(dropdownId);
+            const menu = document.getElementById(dropdownId + 'Menu');
+            const hiddenInput = document.getElementById(hiddenInputId);
+            const textSpan = dropdown.querySelector('.dropdown-text');
+
+            // Toggle dropdown
+            dropdown.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isExpanded = dropdown.getAttribute('aria-expanded') === 'true';
+
+                // Close all other dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+                document.querySelectorAll('.dropdown-trigger').forEach(t => t.setAttribute('aria-expanded', 'false'));
+
+                if (!isExpanded) {
+                    dropdown.setAttribute('aria-expanded', 'true');
+                    menu.classList.add('show');
+                } else {
+                    dropdown.setAttribute('aria-expanded', 'false');
+                    menu.classList.remove('show');
+                }
+            });
+
+            // Handle item selection
+            menu.addEventListener('click', function (e) {
+                if (e.target.classList.contains('dropdown-item')) {
+                    const value = e.target.getAttribute('data-value');
+                    const text = e.target.textContent;
+
+                    hiddenInput.value = value;
+                    textSpan.textContent = text;
+
+                    // Update active state
+                    menu.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Close dropdown
+                    dropdown.setAttribute('aria-expanded', 'false');
+                    menu.classList.remove('show');
+
+                    // Trigger change event
+                    hiddenInput.dispatchEvent(new Event('change'));
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target) && !menu.contains(e.target)) {
+                    dropdown.setAttribute('aria-expanded', 'false');
+                    menu.classList.remove('show');
+                }
+            });
+
+            // Keyboard navigation
+            dropdown.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    dropdown.click();
+                }
+            });
+
         }
 
         // Add staggered animation for cards on load
